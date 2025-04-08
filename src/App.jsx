@@ -1,11 +1,24 @@
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import Home from './pages/Home/Home';
+import Login from './pages/Auth/Login/Login';
+import Signin from './pages/Auth/Signin/Signin';
+import './App.css';
 
 function App() {
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-white">
-      <p className="text-8xl font-black animate-pulse text-gray-800 hover:scale-125 cursor-all-scroll">Hola mundo</p>
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        {/* Rutas públicas */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signin" element={<Signin />} />
+
+        {/* Ruta para manejar páginas no encontradas */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
