@@ -21,7 +21,6 @@ const Login = () => {
             const { user, error } = await loginWithEmailAndPassword(email, password);
             
             if (error) {
-                // Manejo de errores específicos de Firebase
                 let errorMessage = 'Error al iniciar sesión';
                 
                 switch (error.code) {
@@ -44,7 +43,9 @@ const Login = () => {
             }
             
             console.log('Inicio de sesión exitoso:', user);
-            navigate('/home');
+            
+            const from = location.state?.from || '/home';
+            navigate(from);
             
         } catch (err) {
             setError('Error inesperado al iniciar sesión');

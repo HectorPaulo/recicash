@@ -2,13 +2,22 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import Home from './pages/Home/Home';
 import Login from './pages/Auth/Login/Login';
 import Signin from './pages/Auth/Signin/Signin';
+import ProtectedLayout from './layouts/ProtectedLayout';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './App.css';
 
-// Componente para rutas protegidas
 function ProtectedRoute() {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  const { currentUser, isAuthenticated } = useAuth();
+  
+  if (currentUser === undefined) {
+    return <div className="flex items-center justify-center h-screen">Cargando...</div>;
+  }
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+  
+  return <Outlet />;
 }
 
 function AppRoutes() {
@@ -21,8 +30,10 @@ function AppRoutes() {
       
       {/* Rutas protegidas */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/home" element={<Home />} />
-        {/* Otras rutas protegidas aquí */}
+        <Route element={<ProtectedLayout />}>
+          <Route path="/home" element={<Home />} />
+          {/* Otras rutas protegidas aquí */}
+        </Route>
       </Route>
 
       {/* Ruta para manejar páginas no encontradas */}

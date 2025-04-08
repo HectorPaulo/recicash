@@ -3,7 +3,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  onAuthStateChanged 
+  updateProfile,
+  onAuthStateChanged
 } from "firebase/auth";
 import { app } from "./firebase";
 
@@ -12,10 +13,14 @@ const auth = getAuth(app);
 export const registerWithEmailAndPassword = async (name, email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
     
-    return { user };
+    await updateProfile(userCredential.user, {
+      displayName: name
+    });
+    
+    return { user: userCredential.user };
   } catch (error) {
+    console.error("Error en registro:", error);
     return { error };
   }
 };
@@ -23,9 +28,9 @@ export const registerWithEmailAndPassword = async (name, email, password) => {
 export const loginWithEmailAndPassword = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-    return { user };
+    return { user: userCredential.user };
   } catch (error) {
+    console.error("Error en login:", error);
     return { error };
   }
 };
