@@ -28,7 +28,7 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav ref={navbarRef} className="fixed top-0 left-0 right-0 z-50 bg-[#8ccf8f]">
+        <nav ref={navbarRef} className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#175119]/30">
             {/* Versión de escritorio */}
             <div className="hidden md:block mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
@@ -71,7 +71,6 @@ const Navbar = () => {
                             <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="white" className="mr-2">
                                 <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
                             </svg>
-                            Cerrar sesión
                         </button>
                     </div>
                 </div>
@@ -97,24 +96,24 @@ const Navbar = () => {
                 </div>
                 
                 {isMenuOpen && (
-                    <div className="mt-4 py-2 bg-green-700 rounded-lg">
+                    <div className="backdrop-blur-md bg-[#175119]/30 mt-4 py-2 rounded-lg">
                         <ul className="flex flex-col space-y-2">
-                            <li className="px-4 py-2 hover:bg-green-600">
+                            <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                                 <Link to="/home" className="text-white block">Home</Link>
                             </li>
-                            <li className="px-4 py-2 hover:bg-green-600">
+                            <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                                 <Link to="#" className="text-white block">Dashboard</Link>
                             </li>
-                            <li className="px-4 py-2 hover:bg-green-600">
+                            <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                                 <Link to="#" className="text-white block">Cards</Link>
                             </li>
-                            <li className="px-4 py-2 hover:bg-green-600">
+                            <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                                 <Link to="#" className="text-white block">Panel</Link>
                             </li>
-                            <li className="px-4 py-2 hover:bg-green-600">
+                            <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                                 <Link to="#" className="text-white block">Movimientos</Link>
                             </li>
-                            <li className="px-4 py-2 hover:bg-green-600">
+                            <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                                 <Link to="/settings" className="text-white block">Preferencias</Link>
                             </li>
                             <li className="px-4 py-2 hover:bg-red-900 flex items-center cursor-pointer">
@@ -125,7 +124,6 @@ const Navbar = () => {
                                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white" className="mr-2">
                                         <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
                                     </svg>
-                                    Cerrar sesión
                                 </button>
                             </li>
                         </ul>
