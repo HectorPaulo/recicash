@@ -1,47 +1,51 @@
-import { useNavigate } from 'react-router-dom';
-import { logoutUser } from '../../lib/firebase/auth';
 import { useAuth } from '../../contexts/AuthContext';
+import natureImage from '/src/assets/Images/undraw_environment_9luj.svg';
 
 const Home = () => {
-  const navigate = useNavigate();
   const { currentUser } = useAuth();
-  
-  const handleLogout = async () => {
-    try {
-      await logoutUser();
-      navigate('/login');
-    } catch (error) {
-      console.error("Error al cerrar sesión", error);
-    }
-  };
+
+  const cards = [
+    {
+      title: '¿Por qué reciclar?',
+      content: 'El reciclaje ayuda a reducir la contaminación, ahorrar energía y conservar recursos naturales.',
+    },
+    {
+      title: 'Materiales reciclables',
+      content: 'Papel, cartón, vidrio, plástico y metales son algunos de los materiales que puedes reciclar.',
+    },
+    {
+      title: 'Consejos para reciclar',
+      content: 'Limpia los materiales antes de reciclarlos y sepáralos según su tipo.',
+    },
+    {
+      title: 'Impacto positivo',
+      content: 'Reciclar una tonelada de papel puede salvar hasta 17 árboles y 26,500 litros de agua.',
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-green-700">Bienvenido a Recicash</h1>
-          <button 
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition-colors"
-          >
-            Cerrar sesión
-          </button>
-        </div>
-        
-        {currentUser && (
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <p className="text-gray-700">
-              <span className="font-medium">Usuario:</span> {currentUser.displayName || 'Usuario sin nombre'}
-            </p>
-            <p className="text-gray-700">
-              <span className="font-medium">Email:</span> {currentUser.email}
-            </p>
+    <div className='mt-20 p-4 flex flex-col items-center'>
+      <div className='w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8'>
+        <div>
+          <h1 className='text-2xl font-bold mb-4 text-center lg:text-left'>
+            Bienvenido a <strong className='text-green-700'>Recicash</strong>
+          </h1>
+          <p className='text-lg mb-8 text-center lg:text-left'>¡Hola, {currentUser?.email}!</p>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+            {cards.map((card, index) => (
+              <div
+                key={index}
+                className='bg-white rounded-lg p-6 border-2 border-gray-200'
+              >
+                <h2 className='text-xl font-semibold mb-2'>{card.title}</h2>
+                <p className='text-gray-700'>{card.content}</p>
+              </div>
+            ))}
           </div>
-        )}
-        
-        <p className="text-gray-600">
-          Esta es una página protegida. Solo usuarios autenticados pueden verla.
-        </p>
+        </div>
+        <div className='hidden lg:block my-auto'>
+          <img src={natureImage} alt='Nature' className='w-full h-auto max-w-sm mx-auto' />
+        </div>
       </div>
     </div>
   );

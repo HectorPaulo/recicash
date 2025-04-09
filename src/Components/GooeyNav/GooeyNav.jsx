@@ -1,8 +1,6 @@
-/*
-	Installed from https://reactbits.dev/tailwind/
-*/
-
 import { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from '../../lib/firebase/auth';
 
 const GooeyNav = ({
   items,
@@ -19,13 +17,26 @@ const GooeyNav = ({
   const filterRef = useRef(null);
   const textRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
+  const navigate = useNavigate();
+  
   const noise = (n = 1) => n / 2 - Math.random() * n;
-  const getXY = (distance, pointIndex, totalPoints) => {
+  
+  const getXY = (
+    distance,
+    pointIndex,
+    totalPoints
+  ) => {
     const angle =
       ((360 + noise(8)) / totalPoints) * pointIndex * (Math.PI / 180);
     return [distance * Math.cos(angle), distance * Math.sin(angle)];
   };
-  const createParticle = (i, t, d, r) => {
+  
+  const createParticle = (
+    i,
+    t,
+    d,
+    r
+  ) => {
     let rotate = noise(r / 10);
     return {
       start: getXY(d[0], particleCount - i, particleCount),
@@ -36,6 +47,7 @@ const GooeyNav = ({
       rotate: rotate > 0 ? (rotate + r / 20) * 10 : (rotate - r / 20) * 10,
     };
   };
+  
   const makeParticles = (element) => {
     const d = particleDistances;
     const r = particleR;
@@ -73,6 +85,7 @@ const GooeyNav = ({
       }, 30);
     }
   };
+  
   const updateEffectPosition = (element) => {
     if (!containerRef.current || !filterRef.current || !textRef.current) return;
     const containerRect = containerRef.current.getBoundingClientRect();
@@ -87,6 +100,7 @@ const GooeyNav = ({
     Object.assign(textRef.current.style, styles);
     textRef.current.innerText = element.innerText;
   };
+  
   const handleClick = (e, index) => {
     const liEl = e.currentTarget;
     if (activeIndex === index) return;
@@ -105,25 +119,45 @@ const GooeyNav = ({
       makeParticles(filterRef.current);
     }
   };
-  const handleKeyDown = (e, index) => {
+  
+  const handleKeyDown = (
+    e,
+    index
+  ) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       const liEl = e.currentTarget.parentElement;
       if (liEl) {
-        handleClick({ currentTarget: liEl }, index);
+        handleClick(
+          { currentTarget: liEl },
+          index
+        );
       }
     }
   };
+  
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      navigate('/login');
+    } catch (error) {
+      console.error("Error al cerrar sesión", error);
+    }
+  };
+  
   useEffect(() => {
     if (!navRef.current || !containerRef.current) return;
-    const activeLi = navRef.current.querySelectorAll("li")[activeIndex];
+    const activeLi = navRef.current.querySelectorAll("li")[
+      activeIndex
+    ];
     if (activeLi) {
       updateEffectPosition(activeLi);
       textRef.current?.classList.add("active");
     }
     const resizeObserver = new ResizeObserver(() => {
-      const currentActiveLi =
-        navRef.current?.querySelectorAll("li")[activeIndex];
+      const currentActiveLi = navRef.current?.querySelectorAll("li")[
+        activeIndex
+      ];
       if (currentActiveLi) {
         updateEffectPosition(currentActiveLi);
       }
@@ -271,51 +305,94 @@ const GooeyNav = ({
             transition: all 0.3s ease;
             z-index: -1;
           }
+
+          /* Estilos para pantallas grandes */
+          @media (min-width: 1024px) {
+            .gooey-nav-container {
+              max-width: 100%;
+              padding: 0 2rem;
+            }
+            .gooey-nav {
+              height: 4rem;
+            }
+            .gooey-nav ul {
+              gap: 2rem;
+            }
+            .gooey-nav li {
+              font-size: 1rem;
+              padding: 0.7em 1.2em;
+            }
+          }
+
+          @media (min-width: 1536px) {
+            .gooey-nav-container {
+              padding: 0 4rem;
+            }
+            .gooey-nav ul {
+              gap: 2.5rem;
+            }
+            .gooey-nav li {
+              font-size: 1.1rem;
+            }
+          }
         `}
       </style>
-      <div className="relative" ref={containerRef}>
+      <div className="relative w-full gooey-nav-container" ref={containerRef}>
         <nav
-          className="flex relative w-full"
+          className="flex relative w-full gooey-nav"
           style={{ transform: "translate3d(0,0,0.01px)" }}
         >
-          {/* Contenedor flex para el logo y los items con justify-between */}
           <div className="flex justify-between items-center w-full">
             {/* Logo a la izquierda */}
             <div className="flex items-center">
               <a href="/home">
-              <svg className="w-10 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#fff">
-                <path d="M480-100q-79 0-148-30t-120.5-81.5Q160-263 130-332t-30-148q0-79 30-148t81.5-120.5Q263-800 332-830t148-30v-100l160 160-160 160v-100q-108 0-184 76t-76 184q0 66 30.5 122.5T332-266q16-28 47.5-47.5T452-338q-3-21-8-42t-12-39q-11 9-24 14t-28 5q-33 0-56.5-23.5T300-480v-40q0-17-5.5-32T280-580q50-1 89 9 34 9 62 29.5t29 61.5q0 9-1.5 16.5T453-448q-13-10-26-18t-27-14q17 13 39 40t41 64q20-49 50-96.5t70-87.5q-23 16-44 34t-41 38q-7-11-11-24.5t-4-27.5q0-42 29-71t71-29h40q23 0 38-6t25-14q11-9 17-20 4 67-7 120-9 45-34 82.5T600-440q-15 0-28.5-4T547-455q-7 19-16 50.5T517-337q38 7 67 26t44 45q51-35 81.5-91T740-480h120q0 79-30 148t-81.5 120.5Q697-160 628-130t-148 30Z"/>
-              </svg>
-            </a>
+                <svg className="w-10 md:w-12 lg:w-14 cursor-pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="#fff">
+                  <path d="M480-100q-79 0-148-30t-120.5-81.5Q160-263 130-332t-30-148q0-79 30-148t81.5-120.5Q263-800 332-830t148-30v-100l160 160-160 160v-100q-108 0-184 76t-76 184q0 66 30.5 122.5T332-266q16-28 47.5-47.5T452-338q-3-21-8-42t-12-39q-11 9-24 14t-28 5q-33 0-56.5-23.5T300-480v-40q0-17-5.5-32T280-580q50-1 89 9 34 9 62 29.5t29 61.5q0 9-1.5 16.5T453-448q-13-10-26-18t-27-14q17 13 39 40t41 64q20-49 50-96.5t70-87.5q-23 16-44 34t-41 38q-7-11-11-24.5t-4-27.5q0-42 29-71t71-29h40q23 0 38-6t25-14q11-9 17-20 4 67-7 120-9 45-34 82.5T600-440q-15 0-28.5-4T547-455q-7 19-16 50.5T517-337q38 7 67 26t44 45q51-35 81.5-91T740-480h120q0 79-30 148t-81.5 120.5Q697-160 628-130t-148 30Z"/>
+                </svg>
+              </a>
             </div>
             
-            {/* Items del navbar alineados a la derecha */}
-            <ul
-              ref={navRef}
-              className="flex gap-8 list-none p-0 px-4 m-0 relative z-[3] justify-end"
-              style={{
-                color: "white",
-                textShadow: "0 1px 1px hsl(205deg 30% 10% / 0.2)",
-              }}
-            >
-              {items.map((item, index) => (
-                <li
-                  key={index}
-                  className={`py-[0.6em] px-[1em] rounded-full relative cursor-pointer transition-[background-color_color_box-shadow] duration-300 ease shadow-[0_0_0.5px_1.5px_transparent] text-white ${
-                    activeIndex === index ? "active" : ""
-                  }`}
-                  onClick={(e) => handleClick(e, index)}
-                >
-                  <a
-                    href={item.href}
-                    onKeyDown={(e) => handleKeyDown(e, index)}
-                    className="outline-none"
+            <div className="flex-1 flex justify-center">
+              {/* Lista de navegación */}
+              <ul
+                ref={navRef}
+                className="flex gap-4 md:gap-8 lg:gap-10 list-none p-0 px-4 m-0 relative z-[3] items-center"
+                style={{
+                  color: "white",
+                  textShadow: "0 1px 1px hsl(205deg 30% 10% / 0.2)",
+                }}
+              >
+                {items.map((item, index) => (
+                  <li
+                    key={index}
+                    className={`py-[0.6em] px-[0.8em] md:px-[1em] rounded-full relative cursor-pointer transition-[background-color_color_box-shadow] duration-300 ease shadow-[0_0_0.5px_1.5px_transparent] text-white ${activeIndex === index ? "active" : ""
+                      }`}
+                    onClick={(e) => handleClick(e, index)}
                   >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
+                    <a
+                      href={item.href}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+                      className="outline-none whitespace-nowrap"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            {/* Botón de logout */}
+            <div className="flex items-center">
+              <button 
+                onClick={handleLogout} 
+                className="bg-gray-700 hover:bg-red-800 text-white p-2 md:p-3 rounded-full transition-colors duration-300 flex items-center justify-center"
+                aria-label="Cerrar sesión"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white">
+                  <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>
+                </svg>
+              </button>
+            </div>
           </div>
         </nav>
         <span className="effect filter" ref={filterRef} />

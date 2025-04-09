@@ -4,13 +4,16 @@ import Login from './pages/Auth/Login/Login';
 import Signin from './pages/Auth/Signin/Signin';
 import ProtectedLayout from './layouts/ProtectedLayout';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Loader from './Components/Loader/Loader';
 import './App.css';
+import Settings from './pages/Settings/Settings';
 
 function ProtectedRoute() {
   const { currentUser, isAuthenticated } = useAuth();
   
   if (currentUser === undefined) {
-    return <div className="flex items-center justify-center h-screen">Cargando...</div>;
+    // Reemplazar el div con nuestro Loader
+    return <Loader fullScreen={true} size="xl" message="Verificando autenticación..." />;
   }
   
   if (!isAuthenticated) {
@@ -24,7 +27,6 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Rutas públicas */}
-      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signin" element={<Signin />} />
       
@@ -32,12 +34,13 @@ function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<ProtectedLayout />}>
           <Route path="/home" element={<Home />} />
+          <Route path="/settings" element={<Settings />} />
           {/* Otras rutas protegidas aquí */}
         </Route>
       </Route>
 
       {/* Ruta para manejar páginas no encontradas */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/home" replace />} />
     </Routes>
   );
 }

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from "/src/assets/Images/pexels-lizromo24-1999579.jpg";
 import { registerWithEmailAndPassword } from "../../../lib/firebase/auth";
+import Loader from "../../../Components/Loader/Loader";
 
 const Signin = () => {
     const [name, setName] = useState('');
@@ -51,7 +52,7 @@ const Signin = () => {
             }
             
             console.log('Usuario registrado correctamente:', user);
-            navigate('/home');
+            navigate('/');
             
         } catch (err) {
             setError('Error inesperado al registrar usuario');
@@ -137,7 +138,14 @@ const Signin = () => {
                             type="submit"
                             disabled={isLoading}
                         >
-                            {isLoading ? 'Procesando...' : 'Registrarse'}
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <Loader size="sm" />
+                                    <span className="ml-2">Procesando...</span>
+                                </div>
+                            ) : (
+                                'Registrarse'
+                            )}
                         </button>
                         
                         <p className="text-gray-900">
@@ -152,6 +160,9 @@ const Signin = () => {
                     </form>
                 </div>
             </div>
+            
+            {/* Loader de pantalla completa cuando se está procesando */}
+            {isLoading && <Loader fullScreen={true} message="Creando tu cuenta..." />}
         </div>
     );
 };

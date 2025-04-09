@@ -1,8 +1,9 @@
 import GridDistortion from "/src/Backgrounds/GridDistortion/GridDistortion";
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import backgroundImage from "/src/assets/Images/pexels-mahima-518693-1250260.jpg";
 import { loginWithEmailAndPassword } from "../../../lib/firebase/auth";
+import Loader from "../../../Components/Loader/Loader";
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -10,6 +11,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -108,7 +110,14 @@ const Login = () => {
                             type="submit"
                             disabled={isLoading}
                         >
-                            {isLoading ? 'Verificando...' : 'Entrar'}
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <Loader size="sm" />
+                                    <span className="ml-2">Verificando...</span>
+                                </div>
+                            ) : (
+                                'Entrar'
+                            )}
                         </button>
                         <p className="text-gray-300">
                             ¿Aún no tienes una cuenta?{" "}
@@ -122,6 +131,9 @@ const Login = () => {
                     </form>
                 </div>
             </div>
+            
+            {/* Loader de pantalla completa cuando se está procesando */}
+            {isLoading && <Loader fullScreen={true} message="Iniciando sesión..." />}
         </div>
     );
 };
