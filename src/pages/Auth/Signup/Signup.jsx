@@ -9,6 +9,7 @@ import Loader from "../../../Components/Loader/Loader";
 const Signin = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -29,7 +30,8 @@ const Signin = () => {
       setIsLoading(true);
       setError("");
 
-      const { user, error } = await register(name, email, password);
+      const { user, error } = await register(name, email, password, phone);
+      console.log("Credenciales: ", name, email, password, phone);
 
       if (error) {
         setError(error.message || "Error al crear la cuenta");
@@ -126,6 +128,16 @@ const Signin = () => {
               name="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+
+            <input
+              className="w-full p-2 bg-transparent rounded-md border-2 border-gray-200 focus:border-green-400 hover:border-green-400 transition-all duration-200 text-gray-800"
+              type="text"
+              placeholder="Teléfono"
+              name="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
             />
 

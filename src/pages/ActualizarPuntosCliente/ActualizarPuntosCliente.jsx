@@ -13,8 +13,10 @@ const ActualizarPuntos = ({ clienteId }) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h1 className="text-2xl font-bold mb-4">Actualizar Puntos</h1>
       <input
+      className="border border-gray-300 p-2 mb-4"
         type="number"
         value={puntos}
         onChange={(e) => setPuntos(e.target.value)}

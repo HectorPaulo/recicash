@@ -17,7 +17,6 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Cargar usuario desde localStorage al iniciar, con manejo de errores
     const storedUser = localStorage.getItem("recicash_user");
     if (storedUser) {
       try {
@@ -30,13 +29,23 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
-  // Login
   const login = async (email, password) => {
+    const TIMEOUT_MS = 8000; // 8 segundos
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(
+        () =>
+          reject({ message: "Tiempo de espera agotado. Intenta de nuevo." }),
+        TIMEOUT_MS
+      )
+    );
     try {
-      const data = await loginWithEmailAndPassword(email, password);
-      setCurrentUser(data.user);
-      localStorage.setItem("recicash_user", JSON.stringify(data.user));
-      return { user: data.user };
+      const data = await Promise.race([
+        loginWithEmailAndPassword(email, password),
+        timeoutPromise,
+      ]);
+      setCurrentUser(data);
+      localStorage.setItem("recicash_user", JSON.stringify(data));
+      return { user: data };
     } catch (error) {
       return { error };
     }
@@ -44,16 +53,27 @@ export function AuthProvider({ children }) {
 
   // Registro
   const register = async (nombre, email, password, telefono) => {
+    const TIMEOUT_MS = 8000;
+    const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(
+      () =>
+        reject({message: "Tiempo de espera agotado para el registro. Intentalo de nuevo màs tarde." }),
+      TIMEOUT_MS
+    )
+  );
     try {
-      const data = await registerWithEmailAndPassword(
-        nombre,
-        email,
-        password,
-        telefono
-      );
-      setCurrentUser(data.user);
-      localStorage.setItem("recicash_user", JSON.stringify(data.user));
-      return { user: data.user };
+      const data = await Promise.race([
+        registerWithEmailAndPassword(
+          nombre,
+          email,
+          password,
+          telefono
+        ),
+        timeoutPromise,
+      ]);
+      setCurrentUser(data);
+      localStorage.setItem("recicash_user", JSON.stringify(data));
+      return { user: data };
     } catch (error) {
       return { error };
     }

@@ -1,15 +1,17 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import Login from './pages/Auth/Login/Login';
-import Signin from './pages/Auth/Signin/Signin';
+import Signup from './pages/Auth/Signup/Signup';
 import ProtectedLayout from './layouts/ProtectedLayout';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Cupon from './pages/Cupon/Cupon';
+import ActualizarPuntos from './pages/ActualizarPuntosCliente/ActualizarPuntosCliente'
 import RecentMovements from './pages/RecentMovements/RecentMovements';
 import Loader from './Components/Loader/Loader';
 import './App.css';
 import Settings from './pages/Settings/Settings';
+import DeleteAccount from './pages/DeleteAccount/DeleteAccount'
 
 function ProtectedRoute() {
   const { currentUser, isAuthenticated } = useAuth();
@@ -31,10 +33,12 @@ function AppRoutes() {
     <Routes>
       {/* Rutas públicas */}
       <Route path="/login" element={<Login />} />
-      <Route path="/signin" element={<Signin />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/cupon" element={<Cupon />} />
-      <Route path="/MovimientosRecientes" element={<RecentMovements />} />
+      <Route path="/movimientosrecientes" element={<RecentMovements />} />
+      <Route path="/actualizardatoscliente" element={<ActualizarPuntos />} />
+      <Route path="/eliminarcuenta" element={<DeleteAccount />} />
       
       {/* Rutas protegidas */}
       <Route element={<ProtectedRoute />}>

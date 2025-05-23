@@ -115,7 +115,7 @@ const Login = () => {
               ¿Aún no tienes una cuenta?{" "}
               <a
                 className="font-semibold text-white hover:text-green-500 transition-all duration-200"
-                href="/signin"
+                href="/signup"
               >
                 ¡Regístrate aquí!
               </a>
