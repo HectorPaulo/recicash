@@ -1,53 +1,40 @@
-import { 
-  getAuth, 
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signOut,
-  updateProfile,
-  onAuthStateChanged
-} from "firebase/auth";
-import { app } from "./firebase";
+import axios from "axios";
 
-const auth = getAuth(app);
+const API_URL = import.meta.env.VITE_API_URL;
 
-export const registerWithEmailAndPassword = async (name, email, password) => {
+// Registro
+export const registerWithEmailAndPassword = async (
+  nombre,
+  email,
+  password,
+  telefono
+) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    
-    await updateProfile(userCredential.user, {
-      displayName: name
-    });
-    
-    return { user: userCredential.user };
+    const credentials = { nombre, email, password, telefono };
+    const response = await axios.post(`${API_URL}/auth/register`, credentials);
+    return response.data;
   } catch (error) {
-    console.error("Error en registro:", error);
-    return { error };
+    console.error("Error al crear cuenta: ", error);
+    throw error;
   }
 };
 
+// Login
 export const loginWithEmailAndPassword = async (email, password) => {
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return { user: userCredential.user };
+    const response = await axios.post(`${API_URL}/auth/login`, {
+      email,
+      password,
+    });
+    return response.data;
   } catch (error) {
-    console.error("Error en login:", error);
-    return { error };
+    console.error("Error al iniciar sesión: ", error);
+    throw error;
   }
 };
 
+// Logout (si tienes endpoint)
 export const logoutUser = async () => {
-  try {
-    await signOut(auth);
-    return { success: true };
-  } catch (error) {
-    return { error };
-  }
-};
-
-export const subscribeToAuthChanges = (callback) => {
-  return onAuthStateChanged(auth, callback);
-};
-
-export const getCurrentUser = () => {
-  return auth.currentUser;
+  // Si tu backend requiere logout, implementa aquí
+  // Si no, simplemente borra el usuario del localStorage en el contexto
 };

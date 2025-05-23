@@ -4,6 +4,9 @@ import Login from './pages/Auth/Login/Login';
 import Signin from './pages/Auth/Signin/Signin';
 import ProtectedLayout from './layouts/ProtectedLayout';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Dashboard from './pages/Dashboard/Dashboard';
+import Cupon from './pages/Cupon/Cupon';
+import RecentMovements from './pages/RecentMovements/RecentMovements';
 import Loader from './Components/Loader/Loader';
 import './App.css';
 import Settings from './pages/Settings/Settings';
@@ -29,6 +32,9 @@ function AppRoutes() {
       {/* Rutas públicas */}
       <Route path="/login" element={<Login />} />
       <Route path="/signin" element={<Signin />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/cupon" element={<Cupon />} />
+      <Route path="/MovimientosRecientes" element={<RecentMovements />} />
       
       {/* Rutas protegidas */}
       <Route element={<ProtectedRoute />}>
