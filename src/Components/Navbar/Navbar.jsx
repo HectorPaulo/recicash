@@ -1,7 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
 import { Link, useNavigate } from "react-router-dom";
-import { logoutUser } from '../../lib/firebase/auth';
 import GooeyNav from "/src/Components/GooeyNav/GooeyNav";
 
 const Navbar = () => {
@@ -10,8 +9,10 @@ const Navbar = () => {
     const navigate = useNavigate();
 
     const handleLogout = async () => {
+
+        console.log("token: ", localStorage.getItem("recicash_token"));
         try {
-            await logoutUser();
+            await localStorage.removeItem("recicash_token");
             navigate('/login');
         } catch (error) {
             console.error("Error al cerrar sesión", error);
@@ -66,7 +67,7 @@ const Navbar = () => {
                         {/* Botón de cerrar sesión */}
                         <button 
                             onClick={handleLogout}
-                            className="text-white bg-red-700 hover:bg-red-800 px-3 py-2 rounded-md text-sm font-medium flex items-center"
+                            className="text-white bg-red-700 hover:bg-red-800 px-3 py-2 rounded-md text-sm font-medium flex items-center cursor-pointer"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="white" className="mr-2">
                                 <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>

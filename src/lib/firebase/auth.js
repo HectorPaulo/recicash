@@ -32,9 +32,3 @@ export const loginWithEmailAndPassword = async (email, password) => {
     throw error;
   }
 };
-
-// Logout (si tienes endpoint)
-export const logoutUser = async () => {
-  // Si tu backend requiere logout, implementa aquí
-  // Si no, simplemente borra el usuario del localStorage en el contexto
-};
