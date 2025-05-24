@@ -7,7 +7,6 @@ const navLinks = [
   { to: "/cupon", label: "Cupon" },
   { to: "/movimientosrecientes", label: "Movimientos recientes" },
   { to: "/actualizardatoscliente", label: "Actualizar puntos" },
-  { to: "/settings", label: "Preferencias" },
 ];
 
 const Sidebar = () => {
