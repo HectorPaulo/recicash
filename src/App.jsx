@@ -34,16 +34,16 @@ function AppRoutes() {
       {/* Rutas públicas */}
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/cupon" element={<Cupon />} />
-      <Route path="/movimientosrecientes" element={<RecentMovements />} />
-      <Route path="/actualizardatoscliente" element={<ActualizarPuntos />} />
-      <Route path="/eliminarcuenta" element={<DeleteAccount />} />
       
       {/* Rutas protegidas */}
       <Route element={<ProtectedRoute />}>
         <Route element={<ProtectedLayout />}>
           <Route path="/home" element={<Home />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/cupon" element={<Cupon />} />
+      <Route path="/movimientosrecientes" element={<RecentMovements />} />
+      <Route path="/actualizardatoscliente" element={<ActualizarPuntos />} />
+      <Route path="/eliminarcuenta" element={<DeleteAccount />} />
           <Route path="/settings" element={<Settings />} />
           {/* Otras rutas protegidas aquí */}
         </Route>

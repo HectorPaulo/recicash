@@ -4,7 +4,6 @@ import { createContext, useContext, useState, useEffect } from "react";
 import {
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,
-  logoutUser,
 } from "../lib/firebase/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -90,27 +89,12 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Logout
-  const logout = async () => {
-    const token = localStorage.getItem("recicash_token");
-    if (token) {
-      console.log("Token --> ", token);
-      try {
-        await logoutUser(token);
-      } catch (e) {
-        console.log("Error al cerrar sesión", e);
-      }
-    }
-    setCurrentUser(null);
-    localStorage.removeItem("recicash_user");
-    localStorage.removeItem("recicash_token");
-  };
 
   const handleLogout = async () => {
     const token = localStorage.getItem("recicash_token");
     try {
       if (token) {
-        await logoutUser(token); // Llama al endpoint de logout con el token
+        localStorage.removeItem("recicash_token");
       }
     } catch (error) {
       console.error("Error al cerrar sesión", error);
@@ -126,7 +110,6 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!currentUser,
     login,
     register,
-    logout,
     handleLogout,
     loading,
   };

@@ -3,15 +3,7 @@ import { Link } from "react-router-dom";
 
 const RecentMovements = () => {
   return (
-    <div className="min-h-screen bg-green-100 flex flex-col">
-      {/* Header Superior */}
-      <div className="flex justify-between items-center bg-green-500 text-white px-8 py-3 text-sm">
-        <div className="text-lg font-bold">ReciCASH</div>
-        <div className="space-x-6">
-          <span className="cursor-pointer">Mi cuenta ▼</span>
-          <span className="cursor-pointer">About Us</span>
-        </div>
-      </div>
+    <div className="min-h-screen  flex flex-col mt-15">
 
       <div className="flex flex-1 p-6 gap-6">
         {/* Sidebar */}

@@ -45,17 +45,17 @@ const Navbar = () => {
                             <Link to="/home" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
                                 Home
                             </Link>
-                            <Link to="#" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                            <Link to="/dashboard" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
                                 Dashboard
                             </Link>
-                            <Link to="#" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
-                                Cards
+                            <Link to="cupon" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                                Cupon
                             </Link>
-                            <Link to="#" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
-                                Panel
+                            <Link to="movimientosrecientes" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                                Movimientos Recientes
                             </Link>
-                            <Link to="#" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
-                                Movimientos
+                            <Link to="actualizardatoscliente" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                                Actualizar Datos
                             </Link>
                             <Link to="/settings" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
                                 Preferencias

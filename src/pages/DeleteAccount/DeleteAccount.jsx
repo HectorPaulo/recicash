@@ -1,17 +1,21 @@
 /* eslint-disable no-unused-vars */
 
+import { Navigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const DeleteAccount = () => {
-  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
   const handleDelete = async () => {
     try {
       await axios.delete(
         `${import.meta.env.VITE_API_URL}/auth/${currentUser.id}/delete`
       );
-      logout();
+      localStorage.removeItem("recicash_token");
+      navigate("/login");
     } catch (err) {
       alert("Error al eliminar cuenta");
     }

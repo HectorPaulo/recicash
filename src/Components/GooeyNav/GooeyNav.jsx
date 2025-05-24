@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logoutUser } from '../../lib/firebase/auth';
 
 const GooeyNav = ({
   items,
@@ -138,7 +137,7 @@ const GooeyNav = ({
   
   const handleLogout = async () => {
     try {
-      await logoutUser();
+      localStorage.removeItem("recicash_token");
       navigate('/login');
     } catch (error) {
       console.error("Error al cerrar sesión", error);
