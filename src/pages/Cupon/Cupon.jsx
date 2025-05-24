@@ -1,7 +1,12 @@
+import Sidebar from "../../Components/Sidebar/Sidebar";
 const Cupon = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-white p-6">
-      <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+    <div className="min-h-screen flex flex-col mt-15">
+      <div className="flex flex-1 p-6 gap-6">
+
+      <Sidebar />
+    <div className="flex flex-row items-center justify-center h-screen bg-white p-6">
+      <div className="max-w-md w-full bg-white rounded-lg p-6 border border-gray-200">
         <h1 className="text-3xl font-bold text-black mb-4">GreenPaper</h1>
 
         <div className="flex items-center text-gray-600 mb-4">
@@ -11,13 +16,13 @@ const Cupon = () => {
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-          >
+            >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
               d="M17.657 16.657L13.414 12.414a4 4 0 10-5.657 5.657l4.243 4.243a8 8 0 1111.314-11.314l-4.243 4.243z"
-            />
+              />
           </svg>
           <span>Ubicacion:</span>
         </div>
@@ -29,13 +34,13 @@ const Cupon = () => {
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-          >
+            >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
+              />
           </svg>
           <span>Horario:</span>
         </div>
@@ -62,6 +67,8 @@ const Cupon = () => {
         </button>
       </div>
     </div>
+              </div>
+              </div>
   );
 };
 

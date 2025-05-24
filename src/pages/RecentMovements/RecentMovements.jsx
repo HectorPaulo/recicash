@@ -1,147 +1,70 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Sidebar from "../../Components/Sidebar/Sidebar";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../../contexts/AuthContext";
 
 const RecentMovements = () => {
+  const [cupones, setCupones] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    if (!currentUser?.id) return;
+    setLoading(true);
+    axios
+      .get(
+        `https://proyectodesarrollo-94d5.onrender.com/api/api/cliente/${currentUser.id}/cupones`
+      )
+      .then((res) => setCupones(res.data))
+      .catch(() => setCupones([]))
+      .finally(() => setLoading(false));
+  }, [currentUser]);
+
+  if (loading) return <div>Cargando movimientos recientes...</div>;
+
   return (
     <div className="min-h-screen  flex flex-col mt-15">
-
       <div className="flex flex-1 p-6 gap-6">
         {/* Sidebar */}
-        <div className="w-64 bg-white rounded-lg shadow-md p-6 h-fit">
-          <h2 className="text-lg font-semibold mb-6">Navigation</h2>
-          <ul className="space-y-4 text-gray-700">
-            <li className="flex items-center gap-2 text-gray-500">
-              <span className="w-2 h-2 rounded-full bg-gray-300 inline-block"></span>
-              <Link to="/Dashboard" className="hover:text-green-600">
-                Dashboard
-              </Link>
-            </li>
-            <li className="font-medium flex items-center gap-2 text-green-600">
-              <span className="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
-              Recent movements
-            </li>
-            <li className="flex items-center gap-2 text-gray-500">
-              <span className="w-2 h-2 rounded-full bg-gray-300 inline-block"></span>
-              Settings
-            </li>
-            <li className="flex items-center gap-2 text-gray-500">
-              <span className="w-2 h-2 rounded-full bg-gray-300 inline-block"></span>
-              Log-out
-            </li>
-          </ul>
-        </div>
+        <Sidebar />
 
         {/* Main Content */}
         <div className="flex-1">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-lg font-semibold mb-6">Recent movements</h2>
+          <div className="bg-white rounded-lg p-6">
+            <h2 className="text-4xl font-semibold mb-6">
+              Movimientos recientes
+            </h2>
 
             <div className="overflow-x-auto">
               <table className="min-w-full text-left">
                 <thead>
                   <tr className="border-b text-gray-500">
-                    <th className="pb-2">ORDER ID</th>
-                    <th className="pb-2">DATE</th>
-                    <th className="pb-2">TOTAL</th>
-                    <th className="pb-2">STATUS</th>
-                    <th className="pb-2"></th>
+                    <th className="pb-2">TÍTULO</th>
+                    <th className="pb-2">PRECIO</th>
+                    <th className="pb-2">CANTIDAD</th>
+                    <th className="pb-2">DETALLES</th>
+                    <th className="pb-2">FECHA EXPIRACIÓN</th>
                   </tr>
                 </thead>
                 <tbody className="text-gray-800">
-                  {[
-                    {
-                      id: "#3933",
-                      date: "4 April, 2021",
-                      total: "$135.00 (5 Products)",
-                      status: "Processing",
-                    },
-                    {
-                      id: "#5045",
-                      date: "27 Mar, 2021",
-                      total: "$25.00 (1 Product)",
-                      status: "Processing",
-                    },
-                    {
-                      id: "#5028",
-                      date: "20 Mar, 2021",
-                      total: "$250.00 (4 Products)",
-                      status: "Completed",
-                    },
-                    {
-                      id: "#4600",
-                      date: "19 Mar, 2021",
-                      total: "$35.00 (1 Products)",
-                      status: "Completed",
-                    },
-                    {
-                      id: "#4152",
-                      date: "18 Mar, 2021",
-                      total: "$578.00 (13 Products)",
-                      status: "Completed",
-                    },
-                    {
-                      id: "#8811",
-                      date: "10 Mar, 2021",
-                      total: "$345.00 (7 Products)",
-                      status: "Completed",
-                    },
-                    {
-                      id: "#3536",
-                      date: "5 Mar, 2021",
-                      total: "$560.00 (2 Products)",
-                      status: "Completed",
-                    },
-                    {
-                      id: "#1374",
-                      date: "27 Feb, 2021",
-                      total: "$560.00 (2 Products)",
-                      status: "Completed",
-                    },
-                    {
-                      id: "#7791",
-                      date: "25 Feb, 2021",
-                      total: "$560.00 (2 Products)",
-                      status: "Completed",
-                    },
-                    {
-                      id: "#4846",
-                      date: "24 Feb, 2021",
-                      total: "$23.00 (1 Products)",
-                      status: "Completed",
-                    },
-                    {
-                      id: "#5948",
-                      date: "20 Feb, 2021",
-                      total: "$23.00 (1 Products)",
-                      status: "Completed",
-                    },
-                    {
-                      id: "#1577",
-                      date: "12 Oct, 2020",
-                      total: "$23.00 (1 Products)",
-                      status: "Completed",
-                    },
-                  ].map((item, index) => (
-                    <tr key={index} className="border-b hover:bg-green-50">
-                      <td className="py-3">{item.id}</td>
-                      <td className="py-3">{item.date}</td>
-                      <td className="py-3 font-medium">{item.total}</td>
-                      <td
-                        className={`py-3 ${
-                          item.status === "Completed"
-                            ? "text-green-600"
-                            : "text-yellow-600"
-                        }`}
-                      >
-                        {item.status}
-                      </td>
-                      <td className="py-3">
-                        <button className="text-green-600 hover:underline">
-                          View Details
-                        </button>
+                  {cupones.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="text-center py-4">
+                        No hay cupones recientes.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    cupones.map((cupon) => (
+                      <tr key={cupon.id} className="border-b hover:bg-green-50">
+                        <td className="py-3">{cupon.titulo}</td>
+                        <td className="py-3">{cupon.precio}</td>
+                        <td className="py-3">{cupon.cantidad}</td>
+                        <td className="py-3">{cupon.detalles}</td>
+                        <td className="py-3">{cupon.fechaExpiracion}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

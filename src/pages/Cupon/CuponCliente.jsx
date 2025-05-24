@@ -1,4 +1,5 @@
 // ?? <--
+import Navbar from "../../components/Navbar";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -16,6 +17,7 @@ const ClienteCupones = () => {
 
   return (
     <div>
+      <Navbar />
       <h2>Cupones del Cliente</h2>
       <ul>
         {cupones.map((cupon) => (

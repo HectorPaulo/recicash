@@ -1,3 +1,4 @@
+import Navbar from '../../Components/Navbar/Navbar';
 import { useAuth } from '../../contexts/AuthContext';
 import natureImage from '/src/assets/Images/undraw_environment_9luj.svg';
 import Aurora from '/src/Backgrounds/Aurora/Aurora';
@@ -26,6 +27,7 @@ const Home = () => {
 
   return (
     <div className="relative min-h-screen">
+      <Navbar />
       {/* Fondo Aurora */}
       <div className="fixed inset-0 z-0">
         <Aurora

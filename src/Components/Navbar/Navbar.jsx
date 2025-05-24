@@ -42,22 +42,25 @@ const Navbar = () => {
                             </Link>
                         </div>
                         <div className="ml-6 flex space-x-4">
-                            <Link to="/home" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                            <Link to="/home" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold">
                                 Home
                             </Link>
-                            <Link to="/dashboard" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                            <Link to="/dashboard" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold">
                                 Dashboard
                             </Link>
-                            <Link to="cupon" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                            <Link to="/clientes" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold">
+                                Clientes
+                            </Link>
+                            <Link to="cupon" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold">
                                 Cupon
                             </Link>
-                            <Link to="movimientosrecientes" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                            <Link to="movimientosrecientes" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold">
                                 Movimientos Recientes
                             </Link>
-                            <Link to="actualizardatoscliente" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                            <Link to="actualizardatoscliente" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold">
                                 Actualizar Datos
                             </Link>
-                            <Link to="/settings" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-medium">
+                            <Link to="/settings" className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold">
                                 Preferencias
                             </Link>
                         </div>
@@ -67,7 +70,7 @@ const Navbar = () => {
                         {/* Botón de cerrar sesión */}
                         <button 
                             onClick={handleLogout}
-                            className="text-white bg-red-700 hover:bg-red-800 px-3 py-2 rounded-md text-sm font-medium flex items-center cursor-pointer"
+                            className="text-white bg-red-700 hover:bg-red-800 px-3 py-2 rounded-md text-sm font-bold flex items-center cursor-pointer"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="white" className="mr-2">
                                 <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/>

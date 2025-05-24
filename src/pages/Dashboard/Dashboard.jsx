@@ -1,35 +1,12 @@
 import React from "react";
+import Sidebar from "../../Components/Sidebar/Sidebar";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
     <div className="min-h-screen flex flex-col mt-15">
       <div className="flex flex-1 p-6 gap-6">
-        {/* Sidebar */}
-        <div className="w-64 bg-white rounded-lg shadow-md p-6 h-fit">
-          <h2 className="text-lg font-semibold mb-6">Navigation</h2>
-          <ul className="space-y-4 text-gray-700">
-            <li className="font-medium flex items-center gap-2 text-green-600">
-              <span className="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
-              Dashboard
-            </li>
-            <li className="flex items-center gap-2 text-gray-500">
-              <span className="w-2 h-2 rounded-full bg-gray-300 inline-block"></span>
-              <Link to="/RecentMovements" className="hover:text-green-600">
-                Recent movements
-              </Link>
-            </li>
-            <li className="flex items-center gap-2 text-gray-500">
-              <span className="w-2 h-2 rounded-full bg-gray-300 inline-block"></span>
-              Settings
-            </li>
-            <li className="flex items-center gap-2 text-gray-500">
-              <span className="w-2 h-2 rounded-full bg-gray-300 inline-block"></span>
-              Log-out
-            </li>
-          </ul>
-        </div>
-
+<Sidebar />
         {/* Main Content */}
         <div className="flex-1 space-y-6">
           {/* Profile Section */}

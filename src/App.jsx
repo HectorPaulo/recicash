@@ -12,12 +12,12 @@ import Loader from './Components/Loader/Loader';
 import './App.css';
 import Settings from './pages/Settings/Settings';
 import DeleteAccount from './pages/DeleteAccount/DeleteAccount'
+import ClientesList from './pages/ListadoClientes/ListadoClientes';
 
 function ProtectedRoute() {
   const { currentUser, isAuthenticated } = useAuth();
   
   if (currentUser === undefined) {
-    // Reemplazar el div con nuestro Loader
     return <Loader fullScreen={true} size="xl" message="Verificando autenticación..." />;
   }
   
@@ -40,6 +40,7 @@ function AppRoutes() {
         <Route element={<ProtectedLayout />}>
           <Route path="/home" element={<Home />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/clientes" element={<ClientesList />} />
       <Route path="/cupon" element={<Cupon />} />
       <Route path="/movimientosrecientes" element={<RecentMovements />} />
       <Route path="/actualizardatoscliente" element={<ActualizarPuntos />} />
