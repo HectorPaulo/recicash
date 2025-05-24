@@ -31,6 +31,23 @@ export function AuthProvider({ children }) {
     setLoading(false);
   }, []);
 
+  // Helpers de roles
+  const getRoles = (user) => {
+    // Si el usuario viene de /api/cliente, el rol está en user.user_id.rol
+    if (user?.rol) return user.rol;
+    if (user?.user_id?.rol) return user.user_id.rol;
+    return [];
+  };
+  const isAdmin =
+    currentUser?.rol?.includes("admin") ||
+    currentUser?.user_id?.rol?.includes("admin");
+  const isCliente =
+    currentUser?.rol?.includes("cliente") ||
+    currentUser?.user_id?.rol?.includes("cliente");
+  const isEmpresa =
+    currentUser?.rol?.includes("empresa") ||
+    currentUser?.user_id?.rol?.includes("empresa");
+
   const login = async (email, password) => {
     const TIMEOUT_MS = 8000;
     const timeoutPromise = new Promise((_, reject) =>
@@ -45,8 +62,7 @@ export function AuthProvider({ children }) {
         loginWithEmailAndPassword(email, password),
         timeoutPromise,
       ]);
-      console.log("Login response:", data);
-
+      // data: { id, puntos, user_id: { ...usuario, rol: [...] }, historial }
       if (data.token) {
         const { token, ...user } = data;
         setCurrentUser(user);
@@ -60,7 +76,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Registro
   const register = async (nombre, email, password, telefono) => {
     const TIMEOUT_MS = 8000;
     const timeoutPromise = new Promise((_, reject) =>
@@ -78,7 +93,6 @@ export function AuthProvider({ children }) {
         registerWithEmailAndPassword(nombre, email, password, telefono),
         timeoutPromise,
       ]);
-      console.log("Register response:", data); // <-- Mira aquí la estructura
       const { token, ...user } = data;
       setCurrentUser(user);
       localStorage.setItem("recicash_user", JSON.stringify(user));
@@ -88,7 +102,6 @@ export function AuthProvider({ children }) {
       return { error };
     }
   };
-
 
   const handleLogout = async () => {
     const token = localStorage.getItem("recicash_token");
@@ -108,10 +121,14 @@ export function AuthProvider({ children }) {
   const value = {
     currentUser,
     isAuthenticated: !!currentUser,
+    isAdmin,
+    isCliente,
+    isEmpresa,
     login,
     register,
     handleLogout,
     loading,
+    setCurrentUser,
   };
 
   return (

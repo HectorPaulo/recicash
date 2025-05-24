@@ -1,16 +1,20 @@
 import { Link, useLocation } from "react-router-dom";
-
-const navLinks = [
-  { to: "/", label: "Inicio" },
-  { to: "/dashboard", label: "Panel" },
-  { to: "/clientes", label: "Listado de clientes" },
-  { to: "/cupon", label: "Cupon" },
-  { to: "/movimientosrecientes", label: "Movimientos recientes" },
-  { to: "/actualizardatoscliente", label: "Actualizar puntos" },
-];
+import { useAuth } from "../../contexts/AuthContext";
 
 const Sidebar = () => {
   const location = useLocation();
+  const { isAdmin, isEmpresa, isCliente } = useAuth();
+
+  const navLinks = [
+    { to: "/", label: "Inicio" },
+    { to: "/dashboard", label: "Panel" },
+    isAdmin && { to: "/clientes", label: "Listado de clientes" },
+    isAdmin && { to: "/registrar-empresa", label: "Registrar empresa" }, // Solo admin
+    isEmpresa && { to: "/cupon", label: "Cupones Empresa" },
+    isCliente && { to: "/movimientosrecientes", label: "Mis Cupones" },
+    { to: "/actualizardatoscliente", label: "Actualizar puntos" },
+    { to: "/settings", label: "Preferencias" },
+  ].filter(Boolean);
 
   return (
     <div className="w-70 bg-white rounded-xl border-b-8 border-l-8 border-r-2 border-t-2 border-green-800 p-6 h-fit">
