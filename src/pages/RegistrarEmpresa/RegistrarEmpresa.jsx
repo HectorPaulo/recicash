@@ -73,7 +73,7 @@ const RegistrarEmpresa = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-t from-[#6A994E] to-[#A7C957] flex items-center justify-center">
+    <div className="relative min-h-screen bg-gradient-to-t from-[#6A994E] to-[#A7C957] flex items-center justify-center pt-20">
       <Sidebar />
       <div className="mx-60 bg-white bg-opacity-90 backdrop-blur-sm p-10 rounded-2xl shadow-2xl w-full max-w-xl space-y-8 z-10">
         <h1 className="text-3xl md:text-4xl font-bold text-center text-green-800">
