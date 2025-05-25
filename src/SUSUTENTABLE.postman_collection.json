@@ -1,0 +1,493 @@
+{
+	"info": {
+		"_postman_id": "36336fdd-ae59-4576-9299-cb572088b4b3",
+		"name": "SUSUTENTABLE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "38411068",
+		"_collection_link": "https://www.postman.com/material-astronomer-70579699/workspace/documentacion-aeropuerto/collection/38411068-36336fdd-ae59-4576-9299-cb572088b4b3?action=share&source=collection_link&creator=38411068"
+	},
+	"item": [
+		{
+			"name": "Cliente",
+			"item": [
+				{
+					"name": "Get ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:3000/api/cliente/14e34231-3c66-4507-a3ed-f377c4f73093"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Clientes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{vault:authorization-secret}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:3000/api/cliente"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:3000/api/cliente/5b93eba7-0aef-4d8c-9ec6-2b942868f3b7"
+					},
+					"response": []
+				},
+				{
+					"name": "Post de Usuario a Cliente",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": \"b9f346da-bc4a-416e-983f-deb4a92960d3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/cliente"
+					},
+					"response": []
+				},
+				{
+					"name": "Asignar Puntos a un Cliente",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{vault:authorization-secret}}"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"puntos\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/cliente/14e34231-3c66-4507-a3ed-f377c4f73093/puntos"
+					},
+					"response": []
+				},
+				{
+					"name": "Cupones de un Cliente",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{vault:authorization-secret}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"puntos\": 10\r\n}"
+						},
+						"url": "http://localhost:3000/api/cliente/14e34231-3c66-4507-a3ed-f377c4f73093/cupones"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cupon",
+			"item": [
+				{
+					"name": "GET",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:3000/api/cupon"
+					},
+					"response": []
+				},
+				{
+					"name": "GET ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:3000/api/cupon/b4fe1626-a3ba-4e64-a8c6-21eebe78cecf"
+					},
+					"response": []
+				},
+				{
+					"name": "POST",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"titulo\": \"Cupón de descuento\",\r\n  \"precio\": 50,\r\n  \"cantidad\": 10,\r\n  \"detalles\": \"10% de descuento en productos seleccionados\",\r\n  \"fechaExpiracion\": \"2025-12-31\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/cupon"
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"titulo\": \"Cupón1\",\r\n  \"precio\": 50,\r\n  \"cantidad\": 10,\r\n  \"detalles\": \"10% de descuento en productos seleccionados\",\r\n  \"fechaExpiracion\": \"2025-12-31\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/cupon/afa2c4f3-262e-4349-82f3-d938a54f4611"
+					},
+					"response": []
+				},
+				{
+					"name": "Post de cupon para asignar a una empresa",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"titulo\": \"Cupón de Empresa\",\r\n  \"precio\": 50,\r\n  \"cantidad\": 10,\r\n  \"detalles\": \"10% de descuento\",\r\n  \"fechaExpiracion\": \"2025-12-8\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/cupon/empresa/d28fd171-7856-4388-a822-35775b64a687"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizacion de Precio",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"titulo\": \"Cupón de descuento\",\r\n  \"precio\": 900\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/cupon/b4fe1626-a3ba-4e64-a8c6-21eebe78cecf"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener todos los cupones de una empresa",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"titulo\": \"Cupón de descuento\",\r\n  \"precio\": 900\r\n\r\n}"
+						},
+						"url": "http://localhost:3000/api/cupon/empresa/d28fd171-7856-4388-a822-35775b64a687"
+					},
+					"response": []
+				},
+				{
+					"name": "Agregar un cliente a un cupon",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"titulo\": \"Cupón de descuento\",\r\n  \"precio\": 900\r\n\r\n}"
+						},
+						"url": "http://localhost:3000/api/cupon/afa2c4f3-262e-4349-82f3-d938a54f4611/agregar-cliente/739baf0e-46ef-4321-ba62-0c4e9c2767e5"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Empresa",
+			"item": [
+				{
+					"name": "POST EMPRESA",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_id\": \"b9f346da-bc4a-416e-983f-deb4a92960d3\",\r\n  \"empresa\": \"Mi Empresa\",\r\n  \"ubicacion\": \"Ciudad de México\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/empresa"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Empresa ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:3000/api/empresa/b9f346da-bc4a-416e-983f-deb4a92960d3"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Alll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:3000/api/empresa"
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar un empresa",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"empresa\":\"Empresa sabrosa\",\r\n    \"ubicacion\": \"Perúkistan\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/empresa/b9f346da-bc4a-416e-983f-deb4a92960d3"
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar una Empres",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_id\": \"b9f346da-bc4a-416e-983f-deb4a92960d3\",\r\n  \"empresa\": \"Mi Empresa\",\r\n  \"ubicacion\": \"Ciudad de México\"\r\n}"
+						},
+						"url": "http://localhost:3000/api/empresa/b9f346da-bc4a-416e-983f-deb4a92960d3"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ticket",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"total\": 150.5,\r\n  \"cupon\": \"b4fe1626-a3ba-4e64-a8c6-21eebe78cecf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/ticket"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:3000/api/ticket"
+					},
+					"response": []
+				},
+				{
+					"name": "Ticke por ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"total\": 150.5,\r\n  \"cupon\": \"b4fe1626-a3ba-4e64-a8c6-21eebe78cecf\"\r\n}"
+						},
+						"url": "http://localhost:3000/api/ticket/275ad112-528f-4a04-9da0-3e0f41b5817b"
+					},
+					"response": []
+				},
+				{
+					"name": "Acutualizar un ticket",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"total\": 12222.5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/ticket/275ad112-528f-4a04-9da0-3e0f41b5817b"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "POST REGISTRO USUARIO",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{vault:authorization-secret}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"Joshuass@cliente.com\",\r\n    \"password\":  \"Password1234+\",\r\n    \"nombre\":\"Joshua\",\r\n    \"telefono\": \"9514152727\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/auth/register"
+					},
+					"response": []
+				},
+				{
+					"name": "POST LOGIN",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"admin@email.com\",\r\n    \"password\":  \"Adminpas123s---\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/auth/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Admin\",\r\n  \"email\": \"admin@email.com\",\r\n  \"telefono\": \"1234567890\",\r\n  \"password\": \"Adminpas123s---\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/auth/create/admin"
+					},
+					"response": []
+				},
+				{
+					"name": "POST EMPRESA",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": ""
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"Empresa S.A.\",\r\n  \"email\": \"empresa@email.com\",\r\n  \"telefono\": \"1234567890\",\r\n  \"password\": \"Eap90+*ass\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:3000/api/auth/register/empresa"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Get Usuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:3000/api/auth"
+					},
+					"response": []
+				},
+				{
+					"name": "Get id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

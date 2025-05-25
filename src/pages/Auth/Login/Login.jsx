@@ -25,7 +25,7 @@ const Login = () => {
         setError(error.message || "Error al iniciar sesión");
         return;
       }
-      // Redirige al home
+      console.log("Rol del usuario:", user?.rol || user?.user_id?.rol);
       const from = location.state?.from || "/home";
       navigate(from, { replace: true });
     } catch (err) {

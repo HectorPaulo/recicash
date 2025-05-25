@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import {
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,
+  getClienteByEmail,
 } from "../lib/firebase/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -20,7 +21,8 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("recicash_user");
-    if (storedUser) {
+    const token = localStorage.getItem("recicash_token");
+    if (storedUser && token) {
       try {
         setCurrentUser(JSON.parse(storedUser));
       } catch (e) {
@@ -32,12 +34,6 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Helpers de roles
-  const getRoles = (user) => {
-    // Si el usuario viene de /api/cliente, el rol está en user.user_id.rol
-    if (user?.rol) return user.rol;
-    if (user?.user_id?.rol) return user.user_id.rol;
-    return [];
-  };
   const isAdmin =
     currentUser?.rol?.includes("admin") ||
     currentUser?.user_id?.rol?.includes("admin");
@@ -62,13 +58,15 @@ export function AuthProvider({ children }) {
         loginWithEmailAndPassword(email, password),
         timeoutPromise,
       ]);
-      // data: { id, puntos, user_id: { ...usuario, rol: [...] }, historial }
       if (data.token) {
-        const { token, ...user } = data;
-        setCurrentUser(user);
-        localStorage.setItem("recicash_user", JSON.stringify(user));
-        localStorage.setItem("recicash_token", token);
-        return { user };
+        localStorage.setItem("recicash_token", data.token);
+
+        // Buscar cliente por email
+        const cliente = await getClienteByEmail(data.token, email);
+
+        setCurrentUser(cliente);
+        localStorage.setItem("recicash_user", JSON.stringify(cliente));
+        return { user: cliente };
       }
       return { error: { message: "No se recibió token del servidor" } };
     } catch (error) {
@@ -93,28 +91,30 @@ export function AuthProvider({ children }) {
         registerWithEmailAndPassword(nombre, email, password, telefono),
         timeoutPromise,
       ]);
-      const { token, ...user } = data;
-      setCurrentUser(user);
-      localStorage.setItem("recicash_user", JSON.stringify(user));
-      localStorage.setItem("recicash_token", token);
-      return { user };
+      if (data.token) {
+        localStorage.setItem("recicash_token", data.token);
+
+        // Buscar cliente por email (igual que en login)
+        const cliente = await getClienteByEmail(data.token, email);
+
+        setCurrentUser(cliente);
+        localStorage.setItem("recicash_user", JSON.stringify(cliente));
+        return { user: cliente };
+      }
+      return { error: { message: "No se recibió token del servidor" } };
     } catch (error) {
       return { error };
     }
   };
 
   const handleLogout = async () => {
-    const token = localStorage.getItem("recicash_token");
     try {
-      if (token) {
-        localStorage.removeItem("recicash_token");
-      }
-    } catch (error) {
-      console.error("Error al cerrar sesión", error);
-    } finally {
       localStorage.removeItem("recicash_user");
       localStorage.removeItem("recicash_token");
+      setCurrentUser(null);
       navigate("/login");
+    } catch (error) {
+      console.error("Error al cerrar sesión", error);
     }
   };
 

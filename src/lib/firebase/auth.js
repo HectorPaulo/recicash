@@ -32,3 +32,28 @@ export const loginWithEmailAndPassword = async (email, password) => {
     throw error;
   }
 };
+
+// Obtener usuario autenticado por token
+export const getUserFromToken = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // Aquí debe venir el rol
+  } catch (error) {
+    console.error("Error al obtener usuario por token: ", error);
+    throw error;
+  }
+};
+
+export const getClienteByEmail = async (token, email) => {
+  const response = await axios.get(`${API_URL}/cliente`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  // Busca el cliente cuyo user_id.email coincida
+  return response.data.find((cliente) => cliente.user_id.email === email);
+};
