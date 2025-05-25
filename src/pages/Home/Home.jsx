@@ -24,7 +24,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen bg-gradient-to-t from-[#6A994E] to-[#A7C957]">
       <Navbar />
       {/* Fondo Aurora */}
       <div className="fixed inset-0 z-0">

@@ -22,23 +22,28 @@ const Dashboard = () => {
       .finally(() => setLoading(false));
   }, [currentUser]);
 
+  const nombre =
+    currentUser?.nombre || currentUser?.user_id?.nombre || "Usuario";
+  const email = currentUser?.email || currentUser?.user_id?.email || "-";
+  const telefono =
+    currentUser?.telefono || currentUser?.user_id?.telefono || "-";
+  const rol = Array.isArray(currentUser?.rol)
+    ? currentUser.rol.join(", ")
+    : Array.isArray(currentUser?.user_id?.rol)
+    ? currentUser.user_id.rol.join(", ")
+    : currentUser?.rol || currentUser?.user_id?.rol || "Cliente";
+
   return (
-    <div className="min-h-screen flex flex-col mt-15">
+    <div className="min-h-screen flex flex-col bg-gradient-to-t from-[#6A994E] to-[#A7C957]">
       <div className="flex flex-1 p-6 gap-6">
         <Sidebar />
         {/* Main Content */}
         <div className="flex-1 space-y-6">
           {/* Profile Section */}
           <div className="flex gap-6">
-            <div className="bg-white rounded-lg shadow-md p-6 flex-1 text-center">
-              <h3 className="font-black text-4xl text-green-900">
-                {currentUser?.nombre || "Usuario"}
-              </h3>
-              <p className="text-gray-600 mb-2">
-                {Array.isArray(currentUser?.rol)
-                  ? currentUser.rol.join(", ")
-                  : currentUser?.rol || "Cliente"}
-              </p>
+            <div className="rounded-lg border-2 border-gray-300 p-6 flex-1 text-center">
+              <h3 className="font-black text-4xl text-green-900">{nombre}</h3>
+              <p className="text-gray-600 mb-2">{rol}</p>
               <Link
                 to="/settings"
                 className="text-green-800 hover:underline cursor-pointer font-bold"
@@ -48,17 +53,13 @@ const Dashboard = () => {
             </div>
 
             {/* Billing Address */}
-            <div className="bg-white rounded-lg shadow-md p-6 flex-1">
+            <div className="rounded-lg border-2 border-gray-300 p-6 flex-1">
               <h4 className="text-2xl text-green-900 font-black mb-4">
                 DATOS DE CONTACTO
               </h4>
-              <p className="text-gray-800 font-medium">
-                {currentUser?.nombre || "Usuario"}
-              </p>
-              <p className="text-gray-600">{currentUser?.email || "-"}</p>
-              <p className="text-gray-600 mb-2">
-                {currentUser?.telefono || "-"}
-              </p>
+              <p className="text-gray-800 font-medium">{nombre}</p>
+              <p className="text-gray-600">{email}</p>
+              <p className="text-gray-600 mb-2">{telefono}</p>
               <Link
                 to="/settings"
                 className="text-green-800 cursor-pointer font-bold text-lg hover:underline"
@@ -69,12 +70,14 @@ const Dashboard = () => {
           </div>
 
           {/* Recent Movements */}
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="rounded-lg border-2 border-gray-300 p-6">
             <div className="flex justify-between items-center mb-4">
-              <h4 className="text-lg font-semibold">Movimientos recientes</h4>
+              <h4 className="text-2xl font-bold text-green-800">
+                Movimientos recientes
+              </h4>
               <Link
                 to="/movimientosrecientes"
-                className="text-green-600 hover:underline text-sm"
+                className="text-green-800 font-bold hover:underline text-sm"
               >
                 Ver todos
               </Link>
@@ -107,11 +110,6 @@ const Dashboard = () => {
                 </tbody>
               </table>
             )}
-          </div>
-
-          {/* Footer */}
-          <div className="text-center text-sm text-gray-600 mt-8">
-            © 2025 ReciCash. Todos los derechos reservados.
           </div>
         </div>
       </div>

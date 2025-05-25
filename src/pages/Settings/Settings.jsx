@@ -18,9 +18,9 @@ const Settings = () => {
   useEffect(() => {
     if (currentUser) {
       setForm({
-        nombre: currentUser.nombre || "",
-        email: currentUser.email || "",
-        telefono: currentUser.telefono || "",
+        nombre: "",
+        email: "",
+        telefono: "",
       });
     }
   }, [currentUser]);
@@ -84,6 +84,11 @@ const Settings = () => {
                           className="w-full h-12 bg-white/50 rounded-xl outline outline-offset-[-1px] outline-neutral-200 px-4 text-gray-950"
                           value={form.nombre}
                           onChange={handleChange}
+                          placeholder={
+                            currentUser?.nombre ||
+                            currentUser?.user_id?.nombre ||
+                            ""
+                          }
                           required
                         />
                       </div>
@@ -97,6 +102,11 @@ const Settings = () => {
                           className="w-full h-12 bg-white/50 rounded-xl outline outline-offset-[-1px] outline-neutral-200 px-4 text-gray-950"
                           value={form.email}
                           onChange={handleChange}
+                          placeholder={
+                            currentUser?.email ||
+                            currentUser?.user_id?.email ||
+                            ""
+                          }
                           required
                         />
                       </div>
@@ -110,6 +120,11 @@ const Settings = () => {
                           className="w-full h-12 bg-white/50 rounded-xl outline outline-offset-[-1px] outline-neutral-200 px-4 text-gray-950"
                           value={form.telefono}
                           onChange={handleChange}
+                          placeholder={
+                            currentUser?.telefono ||
+                            currentUser?.user_id?.telefono ||
+                            ""
+                          }
                         />
                       </div>
                     </div>

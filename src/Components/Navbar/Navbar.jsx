@@ -42,7 +42,7 @@ const Navbar = () => {
                 <svg
                   className="h-12 w-auto"
                   xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 -960 960 960"
+                  viewBox="http://www.w3.org/2000/svg"
                   fill="white"
                 >
                   <path d="M480-100q-79 0-148-30t-120.5-81.5Q160-263 130-332t-30-148q0-79 30-148t81.5-120.5Q263-800 332-830t148-30v-100l160 160-160 160v-100q-108 0-184 76t-76 184q0 66 30.5 122.5T332-266q16-28 47.5-47.5T452-338q-3-21-8-42t-12-39q-11 9-24 14t-28 5q-33 0-56.5-23.5T300-480v-40q0-17-5.5-32T280-580q50-1 89 9 34 9 62 29.5t29 61.5q0 9-1.5 16.5T453-448q-13-10-26-18t-27-14q17 13 39 40t41 64q20-49 50-96.5t70-87.5q-23 16-44 34t-41 38q-7-11-11-24.5t-4-27.5q0-42 29-71t71-29h40q23 0 38-6t25-14q11-9 17-20 4 67-7 120-9 45-34 82.5T600-440q-15 0-28.5-4T547-455q-7 19-16 50.5T517-337q38 7 67 26t44 45q51-35 81.5-91T740-480h120q0 79-30 148t-81.5 120.5Q697-160 628-130t-148 30Z" />
@@ -100,12 +100,14 @@ const Navbar = () => {
                   Movimientos Recientes
                 </Link>
               )}
-              <Link
-                to="/actualizardatoscliente"
-                className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
-              >
-                Actualizar Datos
-              </Link>
+              {!isAdmin && (
+                <Link
+                  to="/actualizardatoscliente"
+                  className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
+                >
+                  Actualizar Datos
+                </Link>
+              )}
               <Link
                 to="/settings"
                 className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
@@ -123,13 +125,13 @@ const Navbar = () => {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                height="20px"
-                viewBox="0 -960 960 960"
-                width="20px"
                 fill="white"
+                viewBox="0 0 24 24"
+                width="24px"
+                height="24px"
                 className="mr-2"
               >
-                <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+                <path d="M16 13v-2H7V8l-5 4 5 4v-3zM20 3h-8c-1.1 0-2 .9-2 2v4h2V5h8v14h-8v-4h-2v4c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
               </svg>
             </button>
           </div>
@@ -143,7 +145,7 @@ const Navbar = () => {
             <svg
               className="w-14 h-14"
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 -960 960 960"
+              viewBox="http://www.w3.org/2000/svg"
               fill="white"
             >
               <path d="M480-100q-79 0-148-30t-120.5-81.5Q160-263 130-332t-30-148q0-79 30-148t81.5-120.5Q263-800 332-830t148-30v-100l160 160-160 160v-100q-108 0-184 76t-76 184q0 66 30.5 122.5T332-266q16-28 47.5-47.5T452-338q-3-21-8-42t-12-39q-11 9-24 14t-28 5q-33 0-56.5-23.5T300-480v-40q0-17-5.5-32T280-580q50-1 89 9 34 9 62 29.5t29 61.5q0 9-1.5 16.5T453-448q-13-10-26-18t-27-14q17 13 39 40t41 64q20-49 50-96.5t70-87.5q-23 16-44 34t-41 38q-7-11-11-24.5t-4-27.5q0-42 29-71t71-29h40q23 0 38-6t25-14q11-9 17-20 4 67-7 120-9 45-34 82.5T600-440q-15 0-28.5-4T547-455q-7 19-16 50.5T517-337q38 7 67 26t44 45q51-35 81.5-91T740-480h120q0 79-30 148t-81.5 120.5Q697-160 628-130t-148 30Z" />
@@ -224,30 +226,35 @@ const Navbar = () => {
                   </Link>
                 </li>
               )}
-              <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
-                <Link to="/actualizardatoscliente" className="text-white block">
-                  Actualizar Datos
-                </Link>
-              </li>
+              {!isAdmin && (
+                <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
+                  <Link
+                    to="/actualizardatoscliente"
+                    className="text-white block"
+                  >
+                    Actualizar Datos
+                  </Link>
+                </li>
+              )}
               <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                 <Link to="/settings" className="text-white block">
                   Preferencias
                 </Link>
               </li>
-              <li className="px-4 py-2 hover:bg-red-900 flex items-center cursor-pointer">
+              <li className="px-4 py-2 flex items-center cursor-pointer">
                 <button
                   onClick={handleLogout}
                   className="text-white flex items-center w-full text-left cursor-pointer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="http://www.w3.org/2000/svg"
-                    width="24px"
                     fill="white"
+                    viewBox="0 0 24 24"
+                    width="24px"
+                    height="24px"
                     className="mr-2"
                   >
-                    <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+                    <path d="M16 13v-2H7V8l-5 4 5 4v-3zM20 3h-8c-1.1 0-2 .9-2 2v4h2V5h8v14h-8v-4h-2v4c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z" />
                   </svg>
                 </button>
               </li>

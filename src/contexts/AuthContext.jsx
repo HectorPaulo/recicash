@@ -46,7 +46,7 @@ export function AuthProvider({ children }) {
     currentUser?.user_id?.rol?.includes("empresa");
 
   const login = async (email, password) => {
-    const TIMEOUT_MS = 8000;
+    const TIMEOUT_MS = 20000;
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(
         () =>
