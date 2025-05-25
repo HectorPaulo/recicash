@@ -15,8 +15,13 @@ const Sidebar = () => {
     isAdmin && { to: "/registrar-empresa", label: "Registrar empresa" },
     isEmpresa && { to: "/cupon", label: "Cupones Empresa" },
     isEmpresa && { to: "/actualizardatoscliente", label: "Actualizar puntos" },
-    isCliente && { to: "/actualizardatoscliente", label: "Actualizar Datos" }, // Solo cliente
-    isCliente && { to: "/movimientosrecientes", label: "Mis Cupones" },
+    // Agrega aquí para empresa y cliente:
+    (isEmpresa || isCliente) && {
+      to: "/movimientosrecientes",
+      label: "Movimientos Recientes",
+    },
+    isCliente && { to: "/actualizardatoscliente", label: "Actualizar Datos" },
+    isCliente && { to: "/miscupones", label: "Mis Cupones" },
     { to: "/settings", label: "Preferencias" },
   ].filter(Boolean);
 

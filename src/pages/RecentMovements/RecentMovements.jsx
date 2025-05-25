@@ -24,33 +24,33 @@ const RecentMovements = () => {
   if (loading) return <div>Cargando movimientos recientes...</div>;
 
   return (
-    <div className="min-h-screen  flex flex-col mt-15">
+    <div className="min-h-screen  flex flex-col bg-gradient-to-t from-[#6A994E] to-[#A7C957]">
       <div className="flex flex-1 p-6 gap-6">
         {/* Sidebar */}
         <Sidebar />
 
         {/* Main Content */}
         <div className="flex-1">
-          <div className="bg-white rounded-lg p-6">
-            <h2 className="text-4xl font-semibold mb-6">
+          <div className="p-6">
+            <h2 className="text-6xl text-center mb-30 text-white font-black">
               Movimientos recientes
             </h2>
 
             <div className="overflow-x-auto">
               <table className="min-w-full text-left">
                 <thead>
-                  <tr className="border-b text-gray-500">
-                    <th className="pb-2">TÍTULO</th>
-                    <th className="pb-2">PRECIO</th>
-                    <th className="pb-2">CANTIDAD</th>
-                    <th className="pb-2">DETALLES</th>
-                    <th className="pb-2">FECHA EXPIRACIÓN</th>
+                  <tr className="border-b-4 text-white">
+                    <th className="pb-2 font-black">TÍTULO</th>
+                    <th className="pb-2 font-black">PRECIO</th>
+                    <th className="pb-2 font-black">CANTIDAD</th>
+                    <th className="pb-2 font-black">DETALLES</th>
+                    <th className="pb-2 font-black">FECHA EXPIRACIÓN</th>
                   </tr>
                 </thead>
                 <tbody className="text-gray-800">
                   {cupones.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="text-center py-4">
+                      <td colSpan="5" className="text-center text-white font-black py-4">
                         No hay cupones recientes.
                       </td>
                     </tr>
@@ -69,29 +69,6 @@ const RecentMovements = () => {
               </table>
             </div>
 
-            {/* Pagination */}
-            <div className="flex justify-center items-center gap-2 mt-6">
-              <button className="px-3 py-1 rounded bg-gray-200 text-gray-600 hover:bg-gray-300">
-                ‹
-              </button>
-              <button className="px-3 py-1 rounded bg-green-500 text-white">
-                1
-              </button>
-              <button className="px-3 py-1 rounded bg-gray-200 text-gray-600 hover:bg-gray-300">
-                2
-              </button>
-              <button className="px-3 py-1 rounded bg-gray-200 text-gray-600 hover:bg-gray-300">
-                3
-              </button>
-              <button className="px-3 py-1 rounded bg-gray-200 text-gray-600 hover:bg-gray-300">
-                ›
-              </button>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center text-sm text-gray-600 mt-8">
-            © 2025 ReciCash. Todos los derechos reservados.
           </div>
         </div>
       </div>

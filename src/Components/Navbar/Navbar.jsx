@@ -92,7 +92,7 @@ const Navbar = () => {
                   Cupones Empresa
                 </Link>
               )}
-              {isCliente && (
+              {(isEmpresa || isCliente) && (
                 <Link
                   to="/movimientosrecientes"
                   className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
@@ -219,7 +219,7 @@ const Navbar = () => {
                   </Link>
                 </li>
               )}
-              {isCliente && (
+              {(isEmpresa || isCliente) && (
                 <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                   <Link to="/movimientosrecientes" className="text-white block">
                     Movimientos Recientes
