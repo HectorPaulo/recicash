@@ -93,7 +93,7 @@ const Signin = () => {
 
             <input
               className="w-full p-2 bg-transparent rounded-md border-2 border-gray-200 focus:border-green-400 hover:border-green-400 transition-all duration-200 text-gray-800"
-              placeholder="Nombre completo"
+              placeholder="Nombre"
               type="text"
               name="name"
               value={name}

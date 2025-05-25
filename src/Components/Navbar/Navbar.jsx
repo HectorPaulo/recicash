@@ -13,6 +13,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await localStorage.removeItem("recicash_token");
+      await localStorage.removeItem("recicash_user");
       navigate("/login");
     } catch (error) {
       console.error("Error al cerrar sesión", error);
@@ -20,7 +21,6 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    // Animación de entrada del Navbar
     gsap.fromTo(
       navbarRef.current,
       { y: -100, opacity: 0 },
@@ -69,6 +69,12 @@ const Navbar = () => {
                     className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
                   >
                     Clientes
+                  </Link>
+                  <Link
+                    to="/empresas"
+                    className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
+                  >
+                    Empresas
                   </Link>
                   <Link
                     to="/registrar-empresa"
@@ -190,6 +196,11 @@ const Navbar = () => {
                   <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                     <Link to="/clientes" className="text-white block">
                       Clientes
+                    </Link>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
+                    <Link to="/empresas" className="text-white block">
+                      Empresas
                     </Link>
                   </li>
                   <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">

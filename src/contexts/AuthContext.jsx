@@ -6,6 +6,7 @@ import {
   registerWithEmailAndPassword,
   getClienteByEmail,
 } from "../lib/firebase/auth";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -61,12 +62,32 @@ export function AuthProvider({ children }) {
       if (data.token) {
         localStorage.setItem("recicash_token", data.token);
 
-        // Buscar cliente por email
-        const cliente = await getClienteByEmail(data.token, email);
+        // 1. Buscar cliente por email
+        let usuario = await getClienteByEmail(data.token, email);
 
-        setCurrentUser(cliente);
-        localStorage.setItem("recicash_user", JSON.stringify(cliente));
-        return { user: cliente };
+        // 2. Si no es cliente, buscar empresa por email
+        if (!usuario) {
+          // Nueva función para buscar empresa por email
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/empresa`,
+            {
+              headers: {
+                Authorization: `Bearer ${data.token}`,
+              },
+            }
+          );
+          usuario = response.data.find(
+            (empresa) => empresa.user_id.email === email
+          );
+        }
+
+        if (usuario) {
+          setCurrentUser(usuario);
+          localStorage.setItem("recicash_user", JSON.stringify(usuario));
+          return { user: usuario };
+        } else {
+          return { error: { message: "Usuario no encontrado" } };
+        }
       }
       return { error: { message: "No se recibió token del servidor" } };
     } catch (error) {
