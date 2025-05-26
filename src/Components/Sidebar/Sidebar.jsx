@@ -13,15 +13,15 @@ const Sidebar = () => {
     isAdmin && { to: "/clientes", label: "Clientes" },
     isAdmin && { to: "/empresas", label: "Empresas" },
     isAdmin && { to: "/registrar-empresa", label: "Registrar empresa" },
+    isAdmin && { to: "/cupones", label: "Cupones de empresas" },
     isEmpresa && { to: "/cupon", label: "Cupones Empresa" },
-    isEmpresa && { to: "/actualizardatoscliente", label: "Actualizar puntos" },
+    isEmpresa && { to: "/actualizar-puntos", label: "Actualizar puntos" },
     // Agrega aquí para empresa y cliente:
     (isEmpresa || isCliente) && {
       to: "/movimientosrecientes",
       label: "Movimientos Recientes",
     },
-    isCliente && { to: "/actualizardatoscliente", label: "Actualizar Datos" },
-    isCliente && { to: "/miscupones", label: "Mis Cupones" },
+    isCliente && { to: "/mis-cupones", label: "Mis Cupones" },
     { to: "/settings", label: "Preferencias" },
   ].filter(Boolean);
 

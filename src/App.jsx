@@ -22,6 +22,8 @@ import ClientesList from "./pages/ListadoClientes/ListadoClientes";
 import ProtectedByRole from "./components/ProtectedByRole";
 import RegistrarEmpresa from "./pages/RegistrarEmpresa/RegistrarEmpresa";
 import Empresas from "./pages/Empresas/Empresas";
+import CuponListEmpresa from "./pages/Cupon/CuponEmpresa";
+import ClienteCupones from "./pages/Cupon/CuponCliente";
 
 function ProtectedRoute() {
   const { currentUser, isAuthenticated } = useAuth();
@@ -60,20 +62,19 @@ function AppRoutes() {
           <Route path="/movimientosrecientes" element={<RecentMovements />} />
           <Route path="/eliminarcuenta" element={<DeleteAccount />} />
           <Route path="/settings" element={<Settings />} />
+            <Route path="/mis-cupones" element={<ClienteCupones />} />
 
           {/* Rutas solo para admin */}
           <Route element={<ProtectedByRole allowedRoles={["admin"]} />}>
             <Route path="/admin" element={<div>Panel Admin</div>} />
-          <Route path="/empresas" element={<Empresas />} />
+            <Route path="/empresas" element={<Empresas />} />
             <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
+            <Route path="/cupones" element={<CuponListEmpresa />} />
           </Route>
           {/* Rutas solo para empresa */}
           <Route element={<ProtectedByRole allowedRoles={["empresa"]} />}>
             <Route path="/empresa" element={<div>Panel Empresa</div>} />
-            <Route
-              path="/actualizardatoscliente"
-              element={<ActualizarPuntos />}
-            />
+            <Route path="/actualizar-puntos" element={<ActualizarPuntos />} />
           </Route>
         </Route>
       </Route>

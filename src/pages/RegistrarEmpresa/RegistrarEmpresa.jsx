@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const RegistrarEmpresa = () => {
   const [form, setForm] = useState({
@@ -13,6 +14,7 @@ const RegistrarEmpresa = () => {
     ubicacion: "",
   });
   const [mensaje, setMensaje] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -66,6 +68,7 @@ const RegistrarEmpresa = () => {
         empresa: "",
         ubicacion: "",
       });
+      navigate('/empresas');
     } catch (error) {
       setMensaje("❌ Error al registrar la empresa y usuario.");
       console.error("Error detalle:", error.response?.data || error);

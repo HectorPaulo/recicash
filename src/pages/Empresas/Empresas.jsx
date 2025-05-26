@@ -347,7 +347,7 @@ const Empresas = () => {
           <div className="w-full flex justify-end mt-8">
             <button
               className="bg-green-800 hover:scale-105 hover:animate-pulse hover:bg-green-950 cursor-pointer px-4 py-2 rounded font-black text-white flex items-center gap-2"
-              onClick={() => navigate("/registrarempresa")}
+              onClick={() => navigate("/registrar-empresa")}
             >
               Agregar empresa
               <span className="material-symbols-outlined">add</span>

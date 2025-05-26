@@ -62,6 +62,12 @@ const Navbar = () => {
               >
                 Dashboard
               </Link>
+              <Link
+                to="/mis-cupones"
+                className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
+              >
+                Mis cupones
+              </Link>
               {isAdmin && (
                 <>
                   <Link
@@ -77,6 +83,12 @@ const Navbar = () => {
                     Empresas
                   </Link>
                   <Link
+                    to="/cupones"
+                    className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
+                  >
+                    Cupones de empresas
+                  </Link>
+                  <Link
                     to="/registrar-empresa"
                     className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
                   >
@@ -85,12 +97,20 @@ const Navbar = () => {
                 </>
               )}
               {isEmpresa && (
-                <Link
-                  to="/cupon"
-                  className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
-                >
-                  Cupones Empresa
-                </Link>
+                <>
+                  <Link
+                    to="/cupon"
+                    className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
+                  >
+                    Cupones Empresa
+                  </Link>
+                  <Link
+                    to="/actualizar-puntos"
+                    className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
+                  >
+                    Actualizar puntos
+                  </Link>
+                </>
               )}
               {(isEmpresa || isCliente) && (
                 <Link
@@ -98,14 +118,6 @@ const Navbar = () => {
                   className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
                 >
                   Movimientos Recientes
-                </Link>
-              )}
-              {!isAdmin && (
-                <Link
-                  to="/actualizardatoscliente"
-                  className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
-                >
-                  Actualizar Datos
                 </Link>
               )}
               <Link
@@ -193,6 +205,11 @@ const Navbar = () => {
                   Dashboard
                 </Link>
               </li>
+              <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
+                <Link to="/mis-cupones" className="text-white block">
+                  Mis cupones
+                </Link>
+              </li>
               {isAdmin && (
                 <>
                   <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
@@ -203,6 +220,11 @@ const Navbar = () => {
                   <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                     <Link to="/empresas" className="text-white block">
                       Empresas
+                    </Link>
+                  </li>
+                  <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
+                    <Link to="/cupones" className="text-white block">
+                      Cupones de empresas
                     </Link>
                   </li>
                   <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">

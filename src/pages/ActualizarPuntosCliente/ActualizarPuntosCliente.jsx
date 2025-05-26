@@ -37,6 +37,7 @@ const ActualizarPuntos = () => {
         <Sidebar />
     <div className="p-6 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-4">Actualizar Puntos</h1>
+      <h2 className="text-2xl font-bold mb-4">Luego lo termino:D</h2>
       <form onSubmit={handleActualizar} className="space-y-4">
         <input
           type="number"
