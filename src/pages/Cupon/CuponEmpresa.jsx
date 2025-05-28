@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from "../../Components/Sidebar/Sidebar";
+import {useAuth} from "../../contexts/AuthContext.jsx";
 
 const CuponListTodasEmpresas = () => {
   const [cupones, setCupones] = useState([]);
   const [participando, setParticipando] = useState(null);
   const clienteId = localStorage.getItem("clienteId");
+  const { isAdmin, isEmpresa, isCliente } = useAuth();
 
   useEffect(() => {
     fetchCupones();
@@ -62,11 +64,11 @@ const CuponListTodasEmpresas = () => {
               </p>
               <div className="flex flex-wrap gap-2 text-white text-lg font-bold">
                 <span>
-                  Precio:{" "}
+                  Remuneración:{" "}
                   <span className="font-mono">${cupon.precio}</span>
                 </span>
                 <span>
-                  Cantidad:{" "}
+                  Cupos:{" "}
                   <span className="font-mono">{cupon.cantidad}</span>
                 </span>
               </div>
@@ -80,6 +82,7 @@ const CuponListTodasEmpresas = () => {
                   <span className="font-mono">{cupon.empresaNombre}</span>
                 </div>
               )}
+              {!isAdmin && (
               <button
                 onClick={() => handleParticipar(cupon.id)}
                 disabled={participando === cupon.id}
@@ -89,6 +92,7 @@ const CuponListTodasEmpresas = () => {
                   ? "Participando..."
                   : "Participar en este cupón"}
               </button>
+              )}
             </div>
           ))}
         </div>

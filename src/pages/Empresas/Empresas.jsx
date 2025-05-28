@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import { useNavigate } from "react-router-dom";
+import {useAuth} from "../../contexts/AuthContext.jsx";
 
 const initialModalState = {
   show: false,
@@ -22,6 +23,7 @@ const Empresas = () => {
   const [deleteModal, setDeleteModal] = useState(initialModalState);
   const [userModal, setUserModal] = useState(initialUserModalState);
   const [editForm, setEditForm] = useState({ empresa: "", ubicacion: "" });
+  const { isAdmin, isEmpresa, isCliente } = useAuth();
 
   // Fetch empresas
   useEffect(() => {
@@ -344,6 +346,8 @@ const Empresas = () => {
           )}
 
           {/* Botón Agregar empresa */}
+          {!isAdmin && (
+
           <div className="w-full flex justify-end mt-8">
             <button
               className="bg-green-800 hover:scale-105 hover:animate-pulse hover:bg-green-950 cursor-pointer px-4 py-2 rounded font-black text-white flex items-center gap-2"
@@ -353,6 +357,7 @@ const Empresas = () => {
               <span className="material-symbols-outlined">add</span>
             </button>
           </div>
+          )}
         </div>
       </div>
     </div>

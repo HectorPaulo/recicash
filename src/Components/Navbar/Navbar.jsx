@@ -62,12 +62,6 @@ const Navbar = () => {
               >
                 Dashboard
               </Link>
-              <Link
-                to="/mis-cupones"
-                className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
-              >
-                Mis cupones
-              </Link>
               {isAdmin && (
                 <>
                   <Link
@@ -83,18 +77,24 @@ const Navbar = () => {
                     Empresas
                   </Link>
                   <Link
+                    to="/registrar-empresa"
+                    className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
+                  >
+                    Registrar Empresa
+                  </Link>
+                  <Link
                     to="/cupones"
                     className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
                   >
                     Cupones de empresas
                   </Link>
-                  <Link
-                    to="/registrar-empresa"
-                    className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
-                  >
-                    Registrar empresa
-                  </Link>
                 </>
+              )}
+              {isCliente && (
+                  <Link to={"/mis-cupones"}
+                  className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold">
+                    Mis cupones
+                  </Link>
               )}
               {isEmpresa && (
                 <>
@@ -102,7 +102,7 @@ const Navbar = () => {
                     to="/cupon"
                     className="text-white hover:bg-green-700 px-3 py-2 rounded-md text-sm font-bold"
                   >
-                    Cupones Empresa
+                    Mis cupones
                   </Link>
                   <Link
                     to="/actualizar-puntos"
@@ -205,11 +205,6 @@ const Navbar = () => {
                   Dashboard
                 </Link>
               </li>
-              <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
-                <Link to="/mis-cupones" className="text-white block">
-                  Mis cupones
-                </Link>
-              </li>
               {isAdmin && (
                 <>
                   <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
@@ -222,22 +217,12 @@ const Navbar = () => {
                       Empresas
                     </Link>
                   </li>
-                  <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
-                    <Link to="/cupones" className="text-white block">
-                      Cupones de empresas
-                    </Link>
-                  </li>
-                  <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
-                    <Link to="/registrar-empresa" className="text-white block">
-                      Registrar empresa
-                    </Link>
-                  </li>
                 </>
               )}
               {isEmpresa && (
                 <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                   <Link to="/cupon" className="text-white block">
-                    Cupones Empresa
+                    Mis cupones
                   </Link>
                 </li>
               )}
@@ -245,16 +230,6 @@ const Navbar = () => {
                 <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
                   <Link to="/movimientosrecientes" className="text-white block">
                     Movimientos Recientes
-                  </Link>
-                </li>
-              )}
-              {!isAdmin && (
-                <li className="px-4 py-2 hover:bg-green-600/20 hover:backdrop-blur-md">
-                  <Link
-                    to="/actualizardatoscliente"
-                    className="text-white block"
-                  >
-                    Actualizar Datos
                   </Link>
                 </li>
               )}

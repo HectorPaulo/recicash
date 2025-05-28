@@ -1,0 +1,282 @@
+﻿# SUSUTENTABLE
+
+###
+# group: Cliente
+# @name Get ID
+GET https://proyectodesarrollo-94d5.onrender.com/api/cliente/14e34231-3c66-4507-a3ed-f377c4f73093
+
+###
+# group: Cliente
+# @name Get Clientes
+GET https://proyectodesarrollo-94d5.onrender.com/api/cliente
+Authorization: Bearer {{vault:authorization-secret}}
+
+###
+# group: Cliente
+# @name Delete
+DELETE https://proyectodesarrollo-94d5.onrender.com/api/cliente/5b93eba7-0aef-4d8c-9ec6-2b942868f3b7
+
+###
+# group: Cliente
+# @name Post de Usuario a Cliente
+POST https://proyectodesarrollo-94d5.onrender.com/api/cliente
+Content-Type: application/json
+
+{
+  "user_id": "b9f346da-bc4a-416e-983f-deb4a92960d3"
+}
+
+###
+# group: Cliente
+# @name Asignar Puntos a un Cliente
+PATCH https://proyectodesarrollo-94d5.onrender.com/api/cliente/14e34231-3c66-4507-a3ed-f377c4f73093/puntos
+Authorization: Bearer {{vault:authorization-secret}}
+Content-Type: application/json
+
+{
+  "puntos": 10
+}
+
+###
+# group: Cliente
+# @name Cupones de un Cliente
+GET https://proyectodesarrollo-94d5.onrender.com/api/cliente/14e34231-3c66-4507-a3ed-f377c4f73093/cupones
+Authorization: Bearer {{vault:authorization-secret}}
+Content-Type: text/plain
+
+{
+ "puntos": 10
+}
+
+###
+# group: Cupon
+# @name GET
+GET https://proyectodesarrollo-94d5.onrender.com/api/cupon
+
+###
+# group: Cupon
+# @name GET ID
+GET https://proyectodesarrollo-94d5.onrender.com/api/cupon/b4fe1626-a3ba-4e64-a8c6-21eebe78cecf
+
+###
+# group: Cupon
+# @name POST
+POST https://proyectodesarrollo-94d5.onrender.com/api/cupon
+Content-Type: application/json
+
+{
+  "titulo": "Cupon 1",
+  "precio": 50,
+  "cantidad": 10,
+  "detalles": "Hola, este es un cupón de prueba",
+  "fechaExpiracion": "2025-12-31",
+  "empresa": "29ecec30-09de-470b-8f21-10783b2938a4"
+}
+
+###
+# group: Cupon
+# @name UPDATE
+PATCH https://proyectodesarrollo-94d5.onrender.com/api/cupon/afa2c4f3-262e-4349-82f3-d938a54f4611
+Content-Type: application/json
+
+{
+  "titulo": "Cupón1",
+  "precio": 50,
+  "cantidad": 10,
+  "detalles": "10% de descuento en productos seleccionados",
+  "fechaExpiracion": "2025-12-31"
+}
+
+###
+# group: Cupon
+# @name Post de cupon para asignar a una empresa
+POST https://proyectodesarrollo-94d5.onrender.com/api/cupon/empresa/d28fd171-7856-4388-a822-35775b64a687
+Content-Type: application/json
+
+{
+  "titulo": "Cupón de Empresa",
+  "precio": 50,
+  "cantidad": 10,
+  "detalles": "10% de descuento",
+  "fechaExpiracion": "2025-12-8"
+}
+
+###
+# group: Cupon
+# @name Actualizacion de Precio
+PATCH https://proyectodesarrollo-94d5.onrender.com/api/cupon/b4fe1626-a3ba-4e64-a8c6-21eebe78cecf
+Content-Type: application/json
+
+{
+  "titulo": "Cupón de descuento",
+  "precio": 900
+}
+
+###
+# group: Cupon
+# @name Obtener todos los cupones de una empresa
+GET https://proyectodesarrollo-94d5.onrender.com/api/cupon/empresa/29ecec30-09de-470b-8f21-10783b2938a4
+Content-Type: text/plain
+
+{
+  "titulo": "Cupón de descuento",
+  "precio": 900
+
+}
+
+###
+# group: Cupon
+# @name Agregar un cliente a un cupon
+POST https://proyectodesarrollo-94d5.onrender.com/api/cupon/afa2c4f3-262e-4349-82f3-d938a54f4611/agregar-cliente/739baf0e-46ef-4321-ba62-0c4e9c2767e5
+Content-Type: text/plain
+
+{
+  "titulo": "Cupón de descuento",
+  "precio": 900
+
+}
+
+###
+# group: Empresa
+# @name POST EMPRESA
+POST https://proyectodesarrollo-94d5.onrender.com/api/empresa
+Content-Type: application/json
+
+{
+  "user_id": "b9f346da-bc4a-416e-983f-deb4a92960d3",
+  "empresa": "Mi Empresa",
+  "ubicacion": "Ciudad de México"
+}
+
+###
+# group: Empresa
+# @name Get Empresa ID
+GET https://proyectodesarrollo-94d5.onrender.com/api/empresa/b9f346da-bc4a-416e-983f-deb4a92960d3
+
+###
+# group: Empresa
+# @name Get Alll
+GET https://proyectodesarrollo-94d5.onrender.com/api/empresa
+
+###
+# group: Empresa
+# @name Actualizar un empresa
+PATCH https://proyectodesarrollo-94d5.onrender.com/api/empresa/b9f346da-bc4a-416e-983f-deb4a92960d3
+Content-Type: application/json
+
+{
+  "empresa": "Empresa sabrosa",
+  "ubicacion": "Perúkistan"
+}
+
+###
+# group: Empresa
+# @name Eliminar una Empres
+DELETE https://proyectodesarrollo-94d5.onrender.com/api/empresa/b9f346da-bc4a-416e-983f-deb4a92960d3
+Content-Type: text/plain
+
+{
+  "user_id": "b9f346da-bc4a-416e-983f-deb4a92960d3",
+  "empresa": "Mi Empresa",
+  "ubicacion": "Ciudad de México"
+}
+
+###
+# group: Ticket
+# @name New Request
+POST https://proyectodesarrollo-94d5.onrender.com/api/ticket
+Content-Type: application/json
+
+{
+  "total": 150.5,
+  "cupon": "b4fe1626-a3ba-4e64-a8c6-21eebe78cecf"
+}
+
+###
+# group: Ticket
+# @name Get All
+GET https://proyectodesarrollo-94d5.onrender.com/api/ticket
+
+###
+# group: Ticket
+# @name Ticke por ID
+GET https://proyectodesarrollo-94d5.onrender.com/api/ticket/275ad112-528f-4a04-9da0-3e0f41b5817b
+Content-Type: text/plain
+
+{
+  "total": 150.5,
+  "cupon": "b4fe1626-a3ba-4e64-a8c6-21eebe78cecf"
+}
+
+###
+# group: Ticket
+# @name Acutualizar un ticket
+PATCH https://proyectodesarrollo-94d5.onrender.com/api/ticket/275ad112-528f-4a04-9da0-3e0f41b5817b
+Content-Type: application/json
+
+{
+  "total": 12222.5
+}
+
+###
+# group: Auth
+# @name POST REGISTRO USUARIO
+POST https://proyectodesarrollo-94d5.onrender.com/api/auth/register
+Authorization: Bearer {{vault:authorization-secret}}
+Content-Type: application/json
+
+{
+  "email": "Joshuass@cliente.com",
+  "password": "Password1234+",
+  "nombre": "Joshua",
+  "telefono": "9514152727"
+}
+
+###
+# group: Auth
+# @name POST LOGIN
+POST https://proyectodesarrollo-94d5.onrender.com/api/auth/login
+Authorization: Bearer {{set_token}}
+Content-Type: application/json
+
+{
+  "email": "admin@email.com",
+  "password": "Adminpas123s---"
+}
+
+###
+# group: Auth
+# @name Create Admin
+POST https://proyectodesarrollo-94d5.onrender.com/api/auth/create/admin
+Content-Type: application/json
+
+{
+  "nombre": "Admin",
+  "email": "admin@email.com",
+  "telefono": "1234567890",
+  "password": "Adminpas123s---"
+}
+
+###
+# group: Auth
+# @name POST EMPRESA
+POST https://proyectodesarrollo-94d5.onrender.com/api/auth/register/empresa
+Authorization: Bearer {{set_token}}
+Content-Type: application/json
+
+{
+  "nombre": "Empresa S.A.",
+  "email": "empresa@email.com",
+  "telefono": "1234567890",
+  "password": "Eap90+*ass"
+}
+
+###
+# group: Usuarios
+# @name Get Usuarios
+GET https://proyectodesarrollo-94d5.onrender.com/api/auth
+
+###
+# group: Usuarios
+# @name Get id
+GET

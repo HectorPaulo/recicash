@@ -24,6 +24,7 @@ const RegistrarEmpresa = () => {
     e.preventDefault();
     setMensaje("");
     try {
+      console.log("Datos del formulario:", form);
       // 1. Registrar usuario de empresa
       const token = localStorage.getItem("recicash_token");
       const res = await axios.post(

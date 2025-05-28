@@ -114,10 +114,10 @@ const ClienteCupones = () => {
                   </p>
                   <div className="flex flex-wrap gap-2 text-white text-lg font-bold">
                     <span>
-                      Precio: <span className="font-mono">${cupon.precio}</span>
+                      Remuneración: <span className="font-mono">${cupon.precio}</span>
                     </span>
                     <span>
-                      Cantidad:{" "}
+                      Cupón:{" "}
                       <span className="font-mono">{cupon.cantidad}</span>
                     </span>
                   </div>

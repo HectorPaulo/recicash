@@ -10,13 +10,12 @@ const Sidebar = () => {
   const navLinks = [
     { to: "/", label: "Inicio" },
     { to: "/dashboard", label: "Panel" },
+    { to: "/cupones", label: "Cupones de empresas" },
+    isAdmin && { to: "/registrar-empresa", label: "Registrar Empresa" },
     isAdmin && { to: "/clientes", label: "Clientes" },
     isAdmin && { to: "/empresas", label: "Empresas" },
-    isAdmin && { to: "/registrar-empresa", label: "Registrar empresa" },
-    isAdmin && { to: "/cupones", label: "Cupones de empresas" },
-    isEmpresa && { to: "/cupon", label: "Cupones Empresa" },
+    isEmpresa && { to: "/cupon", label: "Mis cupones" },
     isEmpresa && { to: "/actualizar-puntos", label: "Actualizar puntos" },
-    // Agrega aquí para empresa y cliente:
     (isEmpresa || isCliente) && {
       to: "/movimientosrecientes",
       label: "Movimientos Recientes",

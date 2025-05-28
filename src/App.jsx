@@ -57,24 +57,30 @@ function AppRoutes() {
         <Route element={<ProtectedLayout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/clientes" element={<ClientesList />} />
-          <Route path="/cupon" element={<Cupon />} />
-          <Route path="/movimientosrecientes" element={<RecentMovements />} />
           <Route path="/eliminarcuenta" element={<DeleteAccount />} />
           <Route path="/settings" element={<Settings />} />
+
+          {/*Rutas solo para cliente*/}
+          <Route element={<ProtectedByRole allowedRoles={["cliente"]} />}>
             <Route path="/mis-cupones" element={<ClienteCupones />} />
+          </Route>
+
+          {/* Rutas solo para empresa */}
+          <Route element={<ProtectedByRole allowedRoles={["empresa"]} />}>
+          <Route path="/cupon" element={<Cupon />} />
+          <Route path="/movimientosrecientes" element={<RecentMovements />} />
+            <Route path="/cupon" element={<Cupon />} />
+            <Route path="/actualizar-puntos" element={<ActualizarPuntos />} />
+          </Route>
 
           {/* Rutas solo para admin */}
           <Route element={<ProtectedByRole allowedRoles={["admin"]} />}>
+          <Route path="/clientes" element={<ClientesList />} />
             <Route path="/admin" element={<div>Panel Admin</div>} />
             <Route path="/empresas" element={<Empresas />} />
-            <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
+          <Route path="/cupon" element={<Cupon />} />
             <Route path="/cupones" element={<CuponListEmpresa />} />
-          </Route>
-          {/* Rutas solo para empresa */}
-          <Route element={<ProtectedByRole allowedRoles={["empresa"]} />}>
-            <Route path="/empresa" element={<div>Panel Empresa</div>} />
-            <Route path="/actualizar-puntos" element={<ActualizarPuntos />} />
+            <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
           </Route>
         </Route>
       </Route>

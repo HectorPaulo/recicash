@@ -10,7 +10,7 @@ export const registerWithEmailAndPassword = async (
   telefono
 ) => {
   try {
-    const credentials = { nombre, email, password, telefono };
+    const credentials = { email, password, nombre, telefono };
     const response = await axios.post(`${API_URL}/auth/register`, credentials);
     return response.data;
   } catch (error) {
