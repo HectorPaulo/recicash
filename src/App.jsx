@@ -22,24 +22,19 @@ import ClientesList from "./pages/ListadoClientes/ListadoClientes";
 import ProtectedByRole from "./components/ProtectedByRole";
 import RegistrarEmpresa from "./pages/RegistrarEmpresa/RegistrarEmpresa";
 import Empresas from "./pages/Empresas/Empresas";
-import CuponListEmpresa from "./pages/Cupon/CuponEmpresa";
 import ClienteCupones from "./pages/Cupon/CuponCliente";
+import Navbar from "./Components/Navbar/Navbar.jsx";
+import {PuntosProvider} from "./contexts/PuntosProvider.tsx";
 
 function ProtectedRoute() {
   const { currentUser, isAuthenticated } = useAuth();
 
   if (currentUser === undefined) {
-    return (
-      <Loader
-        fullScreen={true}
-        size="xl"
-        message="Verificando autenticación..."
-      />
-    );
+        window.location.reload();
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+    return <Navigate to="/home" state={{ from: location.pathname }} replace />;
   }
 
   return <Outlet />;
@@ -49,13 +44,13 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Rutas públicas */}
+          <Route path="/home" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
 
       {/* Rutas protegidas generales */}
       <Route element={<ProtectedRoute />}>
         <Route element={<ProtectedLayout />}>
-          <Route path="/home" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/eliminarcuenta" element={<DeleteAccount />} />
           <Route path="/settings" element={<Settings />} />
@@ -63,6 +58,7 @@ function AppRoutes() {
           {/*Rutas solo para cliente*/}
           <Route element={<ProtectedByRole allowedRoles={["cliente"]} />}>
             <Route path="/mis-cupones" element={<ClienteCupones />} />
+          <Route path="/movimientosrecientes" element={<RecentMovements />} />
           </Route>
 
           {/* Rutas solo para empresa */}
@@ -70,21 +66,18 @@ function AppRoutes() {
           <Route path="/cupon" element={<Cupon />} />
           <Route path="/movimientosrecientes" element={<RecentMovements />} />
             <Route path="/cupon" element={<Cupon />} />
-            <Route path="/actualizar-puntos" element={<ActualizarPuntos />} />
           </Route>
 
           {/* Rutas solo para admin */}
           <Route element={<ProtectedByRole allowedRoles={["admin"]} />}>
+            <Route path="/cupon" element={<Cupon />}></Route>
           <Route path="/clientes" element={<ClientesList />} />
-            <Route path="/admin" element={<div>Panel Admin</div>} />
             <Route path="/empresas" element={<Empresas />} />
-          <Route path="/cupon" element={<Cupon />} />
-            <Route path="/cupones" element={<CuponListEmpresa />} />
             <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
           </Route>
         </Route>
       </Route>
-      <Route path="*" element={<Navigate to="/home" replace />} />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 }
@@ -93,7 +86,9 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <PuntosProvider>
         <AppRoutes />
+        </PuntosProvider>
       </AuthProvider>
     </BrowserRouter>
   );

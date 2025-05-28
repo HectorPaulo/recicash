@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import backgroundImage from "/src/assets/Images/pexels-lizromo24-1999579.jpg";
 import { useAuth } from "../../../contexts/AuthContext";
 import Loader from "../../../Components/Loader/Loader";
+import Swal from "sweetalert2";
 
 const Signin = () => {
   const [name, setName] = useState("");
@@ -12,7 +13,6 @@ const Signin = () => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { register } = useAuth();
@@ -20,27 +20,25 @@ const Signin = () => {
   const handleSignin = async (e) => {
     e.preventDefault();
 
-    // Validar que las contraseñas coincidan
     if (password !== confirmPassword) {
-      setError("Las contraseñas no coinciden");
+      Swal.fire("Error", "Las contraseñas no coinciden", "error");
       return;
     }
 
     try {
       setIsLoading(true);
-      setError("");
 
       const { user, error } = await register(name, email, password, phone);
-      console.log("Credenciales: ", name, email, password, phone);
 
       if (error) {
-        setError(error.message || "Error al crear la cuenta");
+        Swal.fire("Error", error.message || "Error al crear la cuenta", "error");
         return;
       }
 
-      navigate("/home");
+      await Swal.fire("¡Registro exitoso!", "Tu cuenta ha sido creada.", "success");
+      navigate("/dashboard");
     } catch (err) {
-      setError("Error inesperado al registrar usuario");
+      Swal.fire("Error", "Error inesperado al registrar usuario", "error");
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -80,16 +78,6 @@ const Signin = () => {
             <h1 className="text-shadow-gray-800 text-2xl">
               Crear cuenta en Recicash
             </h1>
-
-            {/* Mensaje de error */}
-            {error && (
-              <div
-                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative w-full"
-                role="alert"
-              >
-                <span className="block sm:inline">{error}</span>
-              </div>
-            )}
 
             <input
               className="w-full p-2 bg-transparent rounded-md border-2 border-gray-200 focus:border-green-400 hover:border-green-400 transition-all duration-200 text-gray-800"

@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Sidebar from "../../Components/Sidebar/Sidebar";
 import { useNavigate } from "react-router-dom";
 import {useAuth} from "../../contexts/AuthContext.jsx";
 
@@ -95,7 +94,6 @@ const Empresas = () => {
   return (
     <div className="min h-screen flex flex-col pt-15 bg-gradient-to-t from-[#6A994E] to-[#A7C957]">
       <div className="flex flex-1 p-6 gap-6">
-        <Sidebar />
 
         <div className="flex flex-col items-center min-w-2/3 justify-start min-h-screen">
           <h1 className="text-6xl text-white font-black mb-4">Empresas</h1>

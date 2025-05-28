@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-import Sidebar from "../../Components/Sidebar/Sidebar";
 import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../contexts/AuthContext";
@@ -34,7 +33,6 @@ const ActualizarPuntos = () => {
   return (
     <div className="min-h-screen  flex flex-col mt-15">
       <div className="flex flex-1 p-6 gap-6">
-        <Sidebar />
     <div className="p-6 max-w-md mx-auto">
       <h1 className="text-2xl font-bold mb-4">Actualizar Puntos</h1>
       <h2 className="text-2xl font-bold mb-4">Luego lo termino:D</h2>

@@ -96,7 +96,7 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (nombre, email, password, telefono) => {
-    const TIMEOUT_MS = 8000;
+    const TIMEOUT_MS = 12000;
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(
         () =>

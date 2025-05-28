@@ -1,156 +1,135 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import Aurora from "/src/Backgrounds/Aurora/Aurora";
-import Sidebar from "../../Components/Sidebar/Sidebar";
-import { useAuth } from "../../contexts/AuthContext";
-import axios from "axios";
+                    import { useAuth } from "../../contexts/AuthContext";
+                    import axios from "axios";
+                    import Swal from "sweetalert2";
+                    import backgroundImage from "/src/assets/Images/oxc.jpg"
 
-const Settings = () => {
-  const { currentUser, setCurrentUser } = useAuth();
-  const [form, setForm] = useState({
-    nombre: "",
-    email: "",
-    telefono: "",
-  });
-  const [mensaje, setMensaje] = useState("");
-  const [loading, setLoading] = useState(false);
+                    const Settings = () => {
+                      const { currentUser, setCurrentUser, logout } = useAuth();
+                      const [form, setForm] = useState({
+                        nombre: "",
+                        email: "",
+                        telefono: "",
+                      });
+                      const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (currentUser) {
-      setForm({
-        nombre: "",
-        email: "",
-        telefono: "",
-      });
-    }
-  }, [currentUser]);
+                      useEffect(() => {
+                        if (currentUser) {
+                          setForm({
+                            nombre: currentUser?.nombre || currentUser?.user_id?.nombre || "",
+                            email: currentUser?.email || currentUser?.user_id?.email || "",
+                            telefono: currentUser?.telefono || currentUser?.user_id?.telefono || "",
+                          });
+                        }
+                      }, [currentUser]);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+                      const handleChange = (e) => {
+                        setForm({ ...form, [e.target.name]: e.target.value });
+                      };
 
-  const handleGuardar = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMensaje("");
-    try {
-      await axios.patch(
-        "https://proyectodesarrollo-94d5.onrender.com/api/auth/update/",
-        { id: currentUser.id, ...form }
-      );
-      setMensaje("Datos actualizados correctamente.");
-      setCurrentUser && setCurrentUser({ ...currentUser, ...form });
-    } catch (error) {
-      setMensaje("Error al actualizar los datos.");
-    } finally {
-      setLoading(false);
-    }
-  };
+                      const handleGuardar = async (e) => {
+                        e.preventDefault();
+                        setLoading(true);
+                        try {
+                          await axios.patch("https://proyectodesarrollo-94d5.onrender.com/api/auth/update/", {
+                            id: currentUser.id,
+                            ...form,
+                          });
+                          setCurrentUser && setCurrentUser({ ...currentUser, ...form });
+                          await Swal.fire("¡Listo!", "Datos actualizados correctamente.", "success");
+                        } catch (error) {
+                          await Swal.fire("Error", "Error al actualizar los datos.", "error");
+                        } finally {
+                          setLoading(false);
+                        }
+                      };
 
-  return (
-    <div className="relative min-h-screen w-full bg-gradient-to-t from-[#386641] via-[#6A994E]">
-      {/* Fondo Aurora */}
-      <div className="fixed inset-0 z-0">
-        <Aurora
-          colorStops={["#386641", "#6A994E", "#A7C957"]}
-          blend={0.5}
-          amplitude={1.0}
-          speed={0.5}
-        />
-      </div>
-      <div className="min-h-screen z-50 flex flex-col mt-15">
-        <div className="flex flex-1 p-6 z-50 gap-6">
-          <Sidebar />
-          {/* Contenido principal */}
-          <div className="relative z-10 container mx-auto pt-20 px-4 pb-10">
-            <div className="rounded-xl overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 p-6">
-                <div className="lg:col-span-3">
-                  <form
-                    onSubmit={handleGuardar}
-                    className="bg-white/40 backdrop-blur-sm rounded-lg shadow mb-6 p-6 space-y-6"
-                  >
-                    <h2 className="text-white text-center text-6xl font-black mb-6">
-                      Preferencias de la cuenta
-                    </h2>
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-gray-100 text-lg font-semibold mb-2">
-                          Nombre
-                        </label>
-                        <input
-                          type="text"
-                          name="nombre"
-                          className="w-full h-12 bg-white/50 rounded-xl outline outline-offset-[-1px] outline-neutral-200 px-4 text-gray-950"
-                          value={form.nombre}
-                          onChange={handleChange}
-                          placeholder={
-                            currentUser?.nombre ||
-                            currentUser?.user_id?.nombre ||
-                            ""
+                      const handleEliminarCuenta = async () => {
+                        const confirm = await Swal.fire({
+                          title: "¿Estás seguro?",
+                          text: "Esta acción eliminará tu cuenta permanentemente.",
+                          icon: "warning",
+                          showCancelButton: true,
+                          confirmButtonText: "Sí, eliminar",
+                          cancelButtonText: "Cancelar",
+                        });
+                        if (confirm.isConfirmed) {
+                          setLoading(true);
+                          try {
+                            const clienteId = currentUser?.id || currentUser?.user_id?.id;
+                            await axios.delete(`https://proyectodesarrollo-94d5.onrender.com/api/cliente/${clienteId}`);
+                            await Swal.fire("Cuenta eliminada", "Tu cuenta ha sido eliminada.", "success");
+                            await logout();
+                            window.location.href = "/login";
+                          } catch (error) {
+                            await Swal.fire("Error", "No se pudo eliminar la cuenta.", "error");
+                          } finally {
+                            setLoading(false);
                           }
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-gray-100 text-lg font-semibold mb-2">
-                          Correo Electrónico
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          className="w-full h-12 bg-white/50 rounded-xl outline outline-offset-[-1px] outline-neutral-200 px-4 text-gray-950"
-                          value={form.email}
-                          onChange={handleChange}
-                          placeholder={
-                            currentUser?.email ||
-                            currentUser?.user_id?.email ||
-                            ""
-                          }
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-gray-100 text-lg font-semibold mb-2">
-                          Número de Teléfono
-                        </label>
-                        <input
-                          type="text"
-                          name="telefono"
-                          className="w-full h-12 bg-white/50 rounded-xl outline outline-offset-[-1px] outline-neutral-200 px-4 text-gray-950"
-                          value={form.telefono}
-                          onChange={handleChange}
-                          placeholder={
-                            currentUser?.telefono ||
-                            currentUser?.user_id?.telefono ||
-                            ""
-                          }
-                        />
-                      </div>
-                    </div>
-                    <div className="pt-4">
-                      <button
-                        type="submit"
-                        className="px-8 py-3.5 bg-green-800 rounded-lg cursor-pointer hover:scale-105 text-white text-sm font-semibold hover:bg-green-700 transition-colors"
-                        disabled={loading}
-                      >
-                        {loading ? "Guardando..." : "Guardar Cambios"}
-                      </button>
-                    </div>
-                    {mensaje && (
-                      <div className="mt-4 text-center text-lg text-red-600 font-bold">
-                        {mensaje}
-                      </div>
-                    )}
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+                        }
+                      };
 
-export default Settings;
+                      return (
+                        <div className="flex flex-row min-h-screen " style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                          <div className="w-1/2 max-w-screen backdrop-blur-2xl bg-amber-50/10 h-screen p-10 ">
+                            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+                              Configuración de cuenta
+                            </h2>
+                            <form onSubmit={handleGuardar} className="space-y-6">
+                              <div>
+                                <label className="block text-gray-700 font-medium mb-1">Nombre</label>
+                                <input
+                                  type="text"
+                                  name="nombre"
+                                  className="w-full p-3 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                  value={form.nombre}
+                                  onChange={handleChange}
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-gray-700 font-medium mb-1">Correo electrónico</label>
+                                <input
+                                  type="email"
+                                  name="email"
+                                  className="w-full p-3 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                  value={form.email}
+                                  onChange={handleChange}
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-gray-700 font-medium mb-1">Teléfono</label>
+                                <input
+                                  type="text"
+                                  name="telefono"
+                                  className="w-full p-3 rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                                  value={form.telefono}
+                                  onChange={handleChange}
+                                />
+                              </div>
+                              <div className="flex flex-col md:flex-row gap-4 mt-6">
+                                <button
+                                  type="submit"
+                                  className="w-full bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-semibold px-6 py-3 rounded-lg shadow-md disabled:opacity-60"
+                                  disabled={loading}
+                                >
+                                  {loading ? "Guardando..." : "Guardar cambios"}
+                                </button>
+                                <button
+                                  type="button"
+                                  className="w-full bg-red-600 hover:bg-red-700 transition-colors text-white font-semibold px-6 py-3 rounded-lg shadow-md"
+                                  onClick={handleEliminarCuenta}
+                                  disabled={loading}
+                                >
+                                  Eliminar cuenta
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                          {/*<img src={backgroundImage} alt="Fondo de configuración" className="h-screen w-full z-0 object-cover" />*/}
+                        </div>
+                      );
+                    };
+
+                    export default Settings;

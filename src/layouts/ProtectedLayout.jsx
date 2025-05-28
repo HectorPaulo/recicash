@@ -6,6 +6,7 @@ const ProtectedLayout = () => {
   return (
     <>
       <main>
+          <Navbar/>
         <Outlet />
       </main>
       <Footer />
