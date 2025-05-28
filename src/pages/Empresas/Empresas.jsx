@@ -1,30 +1,25 @@
-/* eslint-disable no-unused-vars */
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {useAuth} from "../../contexts/AuthContext.jsx";
+import { useAuth } from "../../contexts/AuthContext.jsx";
+import { Building, MapPin, User, Eye, Edit3, Trash2, Plus, ChevronLeft, ChevronRight, X, Search, Filter } from "lucide-react";
 
-const initialModalState = {
-  show: false,
-  empresa: null,
-};
-const initialUserModalState = {
-  show: false,
-  user: null,
-};
+const PAGE_SIZE = 8;
+const initialModalState = { show: false, empresa: null };
+const initialUserModalState = { show: false, user: null };
 
 const Empresas = () => {
   const navigate = useNavigate();
   const [empresas, setEmpresas] = useState([]);
-  const [selected, setSelected] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const [detailModal, setDetailModal] = useState(initialModalState);
   const [editModal, setEditModal] = useState(initialModalState);
   const [deleteModal, setDeleteModal] = useState(initialModalState);
   const [userModal, setUserModal] = useState(initialUserModalState);
   const [editForm, setEditForm] = useState({ empresa: "", ubicacion: "" });
-  const { isAdmin, isEmpresa, isCliente } = useAuth();
+  const { isAdmin } = useAuth();
 
-  // Fetch empresas
   useEffect(() => {
     fetchEmpresas();
   }, []);
@@ -32,23 +27,35 @@ const Empresas = () => {
   const fetchEmpresas = async () => {
     try {
       const res = await axios.get(import.meta.env.VITE_API_URL + "/empresa");
-      setEmpresas(res.data);
+      setEmpresas(Array.isArray(res.data) ? res.data : res.data.empresas || []);
+      setCurrentPage(1);
     } catch {
       setEmpresas([]);
     }
   };
 
-  // Ver detalles
-  const handleView = (empresa) => {
-    setDetailModal({ show: true, empresa });
-  };
+  // Filtrar empresas por término de búsqueda
+  const filteredEmpresas = empresas.filter(empresa =>
+      empresa.empresa?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      empresa.ubicacion?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      empresa.user_id?.nombre?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  // Ver responsable
-  const handleViewUser = (user) => {
-    setUserModal({ show: true, user });
-  };
+  // KPIs
+  const totalEmpresas = filteredEmpresas.length;
+  const ubicacionesUnicas = [...new Set(filteredEmpresas.map(e => e.ubicacion))].length;
+  const responsablesAsignados = filteredEmpresas.filter(e => e.user_id).length;
 
-  // Editar
+  // Paginación
+  const totalPages = Math.ceil(filteredEmpresas.length / PAGE_SIZE);
+  const empresasPagina = filteredEmpresas.slice(
+      (currentPage - 1) * PAGE_SIZE,
+      currentPage * PAGE_SIZE
+  );
+
+  // Acciones
+  const handleView = (empresa) => setDetailModal({ show: true, empresa });
+  const handleViewUser = (user) => setUserModal({ show: true, user });
   const handleEdit = (empresa) => {
     setEditForm({
       empresa: empresa.empresa,
@@ -56,325 +63,460 @@ const Empresas = () => {
     });
     setEditModal({ show: true, empresa });
   };
-
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.patch(
-        `${import.meta.env.VITE_API_URL}/empresa/${editModal.empresa.id}`,
-        {
-          empresa: editForm.empresa,
-          ubicacion: editForm.ubicacion,
-        }
+          `${import.meta.env.VITE_API_URL}/empresa/${editModal.empresa.id}`,
+          {
+            empresa: editForm.empresa,
+            ubicacion: editForm.ubicacion,
+          }
       );
       setEditModal(initialModalState);
       fetchEmpresas();
-    } catch (error) {
+    } catch {
       alert("Error al editar empresa");
     }
   };
-
-  // Eliminar
-  const handleDelete = (empresa) => {
-    setDeleteModal({ show: true, empresa });
-  };
-
+  const handleDelete = (empresa) => setDeleteModal({ show: true, empresa });
   const confirmDelete = async () => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_API_URL}/empresa/${deleteModal.empresa.id}`
+          `${import.meta.env.VITE_API_URL}/empresa/${deleteModal.empresa.id}`
       );
       setDeleteModal(initialModalState);
       fetchEmpresas();
-    } catch (error) {
+    } catch {
       alert("Error al eliminar empresa");
     }
   };
 
   return (
-    <div className="min h-screen flex flex-col pt-15 bg-gradient-to-t from-[#6A994E] to-[#A7C957]">
-      <div className="flex flex-1 p-6 gap-6">
+      <div className="min-h-screen">
+        {/* Header */}
+        <div className="bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-6">
+              <div className="flex items-center">
+                <Building className="h-8 w-8 text-green-700 mr-3" />
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">Gestión de Empresas</h1>
+                  <p className="text-sm text-gray-500">Administra y supervisa tu cartera de empresas</p>
+                </div>
+              </div>
+              <button
+                  className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+                  onClick={() => navigate("/registrar-empresa")}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Nueva Empresa
+              </button>
+            </div>
+          </div>
+        </div>
 
-        <div className="flex flex-col items-center min-w-2/3 justify-start min-h-screen">
-          <h1 className="text-6xl text-white font-black mb-4">Empresas</h1>
-          <div className="overflow-x-auto w-full max-w-4xl">
-            <table className="min-w-full mt-20 rounded-xl shadow-xl bg-transparent">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b text-white font-black text-xl bg-transparent">
-                    Empresa
-                  </th>
-                  <th className="py-2 px-4 border-b text-white font-black text-xl bg-transparent">
-                    Ubicación
-                  </th>
-                  <th className="py-2 px-4 border-b text-white font-black text-xl bg-transparent">
-                    Responsable
-                  </th>
-                  <th className="py-2 px-4 border-b text-white font-black text-xl bg-transparent">
-                    Cupones
-                  </th>
-                  <th className="py-2 px-4 border-b text-white font-black text-xl bg-transparent">
-                    #
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {empresas.map((empresa) => (
-                  <tr
-                    key={empresa.id}
-                    className={`text-center ${
-                      selected?.id === empresa.id ? "bg-green-900/30" : ""
-                    }`}
-                    onClick={() => setSelected(empresa)}
-                  >
-                    <td className="py-2 px-4 text-white">
-                      {empresa.empresa || "-"}
-                    </td>
-                    <td className="py-2 px-4 text-white">
-                      {empresa.ubicacion || "-"}
-                    </td>
-                    <td className="py-2 px-4 text-white">
-                      <button
-                        className="text-white font-bold hover:text-green-800 cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleViewUser(empresa.user_id);
-                        }}
-                      >
-                        {empresa.user_id?.nombre || "-"}
-                      </button>
-                    </td>
-                    <td className="py-2 px-4 text-white">
-                      {Array.isArray(empresa.cupones)
-                        ? empresa.cupones.length
-                        : "-"}
-                    </td>
-                    <td className="py-2 px-4 flex gap-2 justify-center text-white">
-                      <button
-                        className="cursor-pointer hover:scale-105 hover:animate-pulse text-blue-200 px-2 py-1"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleView(empresa);
-                        }}
-                      >
-                        <span className="material-symbols-outlined">
-                          visibility
-                        </span>
-                      </button>
-                      <button
-                        className="cursor-pointer hover:scale-105 hover:animate-pulse text-yellow-200 px-2 py-1"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEdit(empresa);
-                        }}
-                      >
-                        <span className="material-symbols-outlined">Edit</span>
-                      </button>
-                      <button
-                        className="cursor-pointer hover:scale-105 hover:animate-pulse text-red-300 px-2 py-1"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(empresa);
-                        }}
-                      >
-                        <span className="material-symbols-outlined">
-                          delete
-                        </span>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-8">
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="px-4 py-5 sm:p-6 flex items-center">
+                <Building className="h-10 w-10 text-green-700 mr-4" />
+                <div>
+                  <dt className="text-sm font-medium text-gray-500 truncate">Empresas totales</dt>
+                  <dd className="mt-1 text-3xl font-semibold text-gray-900">{totalEmpresas}</dd>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="px-4 py-5 sm:p-6 flex items-center">
+                <MapPin className="h-10 w-10 text-green-700 mr-4" />
+                <div>
+                  <dt className="text-sm font-medium text-gray-500 truncate">Ubicaciones únicas</dt>
+                  <dd className="mt-1 text-3xl font-semibold text-gray-900">{ubicacionesUnicas}</dd>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white overflow-hidden shadow rounded-lg">
+              <div className="px-4 py-5 sm:p-6 flex items-center">
+                <User className="h-10 w-10 text-green-700 mr-4" />
+                <div>
+                  <dt className="text-sm font-medium text-gray-500 truncate">Responsables asignados</dt>
+                  <dd className="mt-1 text-3xl font-semibold text-gray-900">{responsablesAsignados}</dd>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Modal Detalles */}
-          {detailModal.show && (
+          {/* Search and Filters */}
+          <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+            <div className="relative w-full sm:w-64">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                  type="text"
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="Buscar empresas..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-2 w-full sm:w-auto">
+              <button className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <Filter className="h-4 w-4 mr-2" />
+                Filtros
+              </button>
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Empresa
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Ubicación
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Responsable
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Acciones
+                  </th>
+                </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                {empresasPagina.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="text-center py-8 text-gray-400">
+                        No hay empresas para mostrar.
+                      </td>
+                    </tr>
+                ) : (
+                    empresasPagina.map((empresa) => (
+                        <tr key={empresa.id} className="hover:bg-gray-50 transition">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <Building className="h-5 w-5 text-green-600 mr-2" />
+                              <span className="font-medium text-gray-900">{empresa.empresa}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-gray-700 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <MapPin className="h-4 w-4 mr-1 text-gray-500" />
+                              {empresa.ubicacion}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {empresa.user_id ? (
+                                <button
+                                    className="flex items-center text-green-700 hover:text-green-900 transition-colors"
+                                    onClick={() => handleViewUser(empresa.user_id)}
+                                >
+                                  <User className="h-4 w-4 mr-1" />
+                                  {empresa.user_id.nombre}
+                                </button>
+                            ) : (
+                                <span className="text-gray-400">Sin responsable</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-center">
+                            <div className="flex items-center justify-center gap-2">
+                              <button
+                                  className="p-2 rounded hover:bg-blue-50 transition-colors"
+                                  onClick={() => handleView(empresa)}
+                                  title="Ver"
+                              >
+                                <Eye className="h-4 w-4 text-blue-600" />
+                              </button>
+                              <button
+                                  className="p-2 rounded hover:bg-amber-50 transition-colors"
+                                  onClick={() => handleEdit(empresa)}
+                                  title="Editar"
+                              >
+                                <Edit3 className="h-4 w-4 text-amber-600" />
+                              </button>
+                              <button
+                                  className="p-2 rounded hover:bg-red-50 transition-colors"
+                                  onClick={() => handleDelete(empresa)}
+                                  title="Eliminar"
+                              >
+                                <Trash2 className="h-4 w-4 text-red-600" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                    ))
+                )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 flex justify-between sm:hidden">
+                      <button
+                          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                          disabled={currentPage === 1}
+                          className="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+                      >
+                        Anterior
+                      </button>
+                      <button
+                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                          disabled={currentPage === totalPages}
+                          className="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+                      >
+                        Siguiente
+                      </button>
+                    </div>
+                    <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                      <div>
+                        <p className="text-sm text-gray-700">
+                          Mostrando{" "}
+                          <span className="font-medium">
+                        {(currentPage - 1) * PAGE_SIZE + 1}
+                      </span>
+                          {" "}a{" "}
+                          <span className="font-medium">
+                        {Math.min(currentPage * PAGE_SIZE, filteredEmpresas.length)}
+                      </span>
+                          {" "}de{" "}
+                          <span className="font-medium">{filteredEmpresas.length}</span>
+                          {" "}empresas
+                        </p>
+                      </div>
+                      <div>
+                        <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                          <button
+                              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                              disabled={currentPage === 1}
+                              className="px-3 py-1 rounded-l bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                          </button>
+                          {[...Array(totalPages)].map((_, idx) => (
+                              <button
+                                  key={idx}
+                                  className={`px-3 py-1 ${
+                                      currentPage === idx + 1
+                                          ? "bg-green-700 text-white"
+                                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                                  } transition`}
+                                  onClick={() => setCurrentPage(idx + 1)}
+                              >
+                                {idx + 1}
+                              </button>
+                          ))}
+                          <button
+                              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                              disabled={currentPage === totalPages}
+                              className="px-3 py-1 rounded-r bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </button>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            )}
+          </div>
+        </div>
+
+        {/* Modals */}
+        {detailModal.show && (
             <Modal onClose={() => setDetailModal(initialModalState)}>
-              <h2 className="text-5xl font-black text-white mb-2 text-center">
-                Detalles
-              </h2>
-              <p className="my-5">
-                <b className="text-xl text-white font-black">Empresa:</b>{" "}
-                {detailModal.empresa.empresa}
-              </p>
-              <p className="my-5">
-                <b className="text-xl text-white font-black">Ubicación:</b>{" "}
-                {detailModal.empresa.ubicacion}
-              </p>
-              <p className="my-5">
-                <b className="text-xl text-white font-black">Responsable:</b>{" "}
-                <button
-                  className="text-blue-200 underline font-bold hover:text-blue-400"
-                  onClick={() => {
-                    setUserModal({
-                      show: true,
-                      user: detailModal.empresa.user_id,
-                    });
-                  }}
-                >
-                  {detailModal.empresa.user_id?.nombre || "-"}
-                </button>
-              </p>
-              <p className="my-5">
-                <b className="text-xl text-white font-black">Email:</b>{" "}
-                {detailModal.empresa.user_id?.email}
-              </p>
-              <p className="my-5">
-                <b className="text-xl text-white font-black">Teléfono:</b>{" "}
-                {detailModal.empresa.user_id?.telefono}
-              </p>
-              <p className="my-5">
-                <b className="text-xl text-white font-black">Cupones:</b>{" "}
-                {Array.isArray(detailModal.empresa.cupones)
-                  ? detailModal.empresa.cupones.length
-                  : "-"}
-              </p>
-              <button
-                className="bg-green-800 hover:scale-105 hover:animate-pulse hover:bg-green-950 cursor-pointer mt-4 px-4 py-2 rounded font-black text-white"
-                onClick={() => setDetailModal(initialModalState)}
-              >
-                Cerrar
-              </button>
+              <div className="flex items-center mb-6">
+                <div className="flex-shrink-0 h-12 w-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                  <Building className="h-6 w-6 text-green-700" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Detalles de la Empresa</h2>
+                  <p className="text-sm text-gray-500">Información completa de la empresa</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <label className="text-sm font-medium text-gray-500">Nombre de la empresa</label>
+                  <p className="text-lg font-semibold text-gray-900">{detailModal.empresa.empresa}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <label className="text-sm font-medium text-gray-500">Ubicación</label>
+                  <p className="text-lg font-semibold text-gray-900">{detailModal.empresa.ubicacion}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <label className="text-sm font-medium text-gray-500">Responsable</label>
+                  {detailModal.empresa.user_id ? (
+                      <div className="mt-2">
+                        <button
+                            className="flex items-center text-green-700 hover:text-green-900 transition-colors"
+                            onClick={() => handleViewUser(detailModal.empresa.user_id)}
+                        >
+                          <User className="h-5 w-5 mr-2" />
+                          <div>
+                            <p className="text-lg font-semibold">{detailModal.empresa.user_id.nombre}</p>
+                            <p className="text-sm text-gray-600">{detailModal.empresa.user_id.email}</p>
+                          </div>
+                        </button>
+                      </div>
+                  ) : (
+                      <p className="text-gray-400">No asignado</p>
+                  )}
+                </div>
+              </div>
             </Modal>
-          )}
+        )}
 
-          {/* Modal Detalles Responsable */}
-          {userModal.show && (
+        {userModal.show && (
             <Modal onClose={() => setUserModal(initialUserModalState)}>
-              <h2 className="text-3xl font-black text-white mb-2 text-center">
-                Responsable
-              </h2>
-              <p className="my-2">
-                <b className="text-white">Nombre:</b> {userModal.user?.nombre}
-              </p>
-              <p className="my-2">
-                <b className="text-white">Email:</b> {userModal.user?.email}
-              </p>
-              <p className="my-2">
-                <b className="text-white">Teléfono:</b>{" "}
-                {userModal.user?.telefono}
-              </p>
-              <p className="my-2">
-                <b className="text-white">Rol:</b>{" "}
-                {Array.isArray(userModal.user?.rol)
-                  ? userModal.user.rol.join(", ")
-                  : userModal.user?.rol || "-"}
-              </p>
-              <p className="my-2">
-                <b className="text-white">Activo:</b>{" "}
-                {userModal.user?.isActive ? "Sí" : "No"}
-              </p>
-              <button
-                className="bg-green-800 hover:scale-105 hover:animate-pulse hover:bg-green-950 cursor-pointer mt-4 px-4 py-2 rounded font-black text-white"
-                onClick={() => setUserModal(initialUserModalState)}
-              >
-                Cerrar
-              </button>
+              <div className="flex items-center mb-6">
+                <div className="flex-shrink-0 h-12 w-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                  <User className="h-6 w-6 text-blue-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Detalles del Responsable</h2>
+                  <p className="text-sm text-gray-500">Información del contacto asignado</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <label className="text-sm font-medium text-gray-500">Nombre completo</label>
+                  <p className="text-lg font-semibold text-gray-900">{userModal.user?.nombre}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <label className="text-sm font-medium text-gray-500">Correo electrónico</label>
+                  <p className="text-lg font-semibold text-gray-900">{userModal.user?.email}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <label className="text-sm font-medium text-gray-500">Teléfono</label>
+                  <p className="text-lg font-semibold text-gray-900">{userModal.user?.telefono || "No especificado"}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <label className="text-sm font-medium text-gray-500">Rol</label>
+                  <p className="text-lg font-semibold text-gray-900">
+                    {Array.isArray(userModal.user?.rol)
+                        ? userModal.user.rol.join(", ")
+                        : userModal.user?.rol}
+                  </p>
+                </div>
+              </div>
             </Modal>
-          )}
+        )}
 
-          {/* Modal Editar */}
-          {editModal.show && (
+        {editModal.show && (
             <Modal onClose={() => setEditModal(initialModalState)}>
-              <h2 className="text-5xl text-white font-black text-center mb-2">
-                Editar empresa
-              </h2>
+              <div className="flex items-center mb-6">
+                <div className="flex-shrink-0 h-12 w-12 bg-amber-100 rounded-full flex items-center justify-center mr-4">
+                  <Edit3 className="h-6 w-6 text-amber-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Editar Empresa</h2>
+                  <p className="text-sm text-gray-500">Actualiza la información de la empresa</p>
+                </div>
+              </div>
               <form onSubmit={handleEditSubmit} className="space-y-4">
-                <input
-                  type="text"
-                  name="empresa"
-                  value={editForm.empresa}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, empresa: e.target.value })
-                  }
-                  className="border-b-2 p-2 w-2/3 border-green-800 bg-transparent text-white"
-                  required
-                />
-                <input
-                  type="text"
-                  name="ubicacion"
-                  value={editForm.ubicacion}
-                  onChange={(e) =>
-                    setEditForm({ ...editForm, ubicacion: e.target.value })
-                  }
-                  className="border-b-2 p-2 w-2/3 border-green-800 bg-transparent text-white"
-                  required
-                />
-                <div className="flex gap-2">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de la empresa</label>
+                  <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      value={editForm.empresa}
+                      onChange={(e) => setEditForm({ ...editForm, empresa: e.target.value })}
+                      required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Ubicación</label>
+                  <input
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      value={editForm.ubicacion}
+                      onChange={(e) => setEditForm({ ...editForm, ubicacion: e.target.value })}
+                      required
+                  />
+                </div>
+                <div className="flex gap-3 pt-4">
                   <button
-                    type="submit"
-                    className="bg-green-800 text-white px-4 py-2 rounded-xl cursor-pointer hover:scale-105 hover:animate-pulse font-black "
+                      type="submit"
+                      className="flex-1 bg-green-700 text-white py-2 px-4 rounded-lg hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors font-medium"
                   >
-                    Guardar
+                    Guardar cambios
                   </button>
                   <button
-                    type="button"
-                    className="bg-gray-300 px-4 py-2 rounded-xl font-bold cursor-pointer hover:scale-105 hover:animate-pulse text-green-900"
-                    onClick={() => setEditModal(initialModalState)}
+                      type="button"
+                      className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors font-medium"
+                      onClick={() => setEditModal(initialModalState)}
                   >
                     Cancelar
                   </button>
                 </div>
               </form>
             </Modal>
-          )}
+        )}
 
-          {/* Modal Eliminar */}
-          {deleteModal.show && (
+        {deleteModal.show && (
             <Modal onClose={() => setDeleteModal(initialModalState)}>
-              <h2 className="text-xl font-black mb-4 text-white">
-                ¿Eliminar empresa "{deleteModal.empresa.empresa}"?
-              </h2>
-              <div className="flex gap-2 items-end justify-center h-50">
+              <div className="flex items-center mb-6">
+                <div className="flex-shrink-0 h-12 w-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                  <Trash2 className="h-6 w-6 text-red-600" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">Eliminar Empresa</h2>
+                  <p className="text-sm text-gray-500">Esta acción no se puede deshacer</p>
+                </div>
+              </div>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <p className="text-red-800">
+                  ¿Estás seguro de que deseas eliminar permanentemente la empresa{" "}
+                  <span className="font-semibold">{deleteModal.empresa.empresa}</span>?
+                </p>
+              </div>
+              <div className="flex gap-3">
                 <button
-                  className="bg-red-600 cursor-pointer hover:scale-105 hover:animate-pulse text-white px-4 py-2 rounded"
-                  onClick={confirmDelete}
+                    className="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors font-medium"
+                    onClick={confirmDelete}
                 >
-                  Eliminar
+                  Eliminar empresa
                 </button>
                 <button
-                  className="bg-gray-300 px-4 py-2 rounded cursor-pointer hover:scale-105 hover:animate-pulse text-green-900"
-                  onClick={() => setDeleteModal(initialModalState)}
+                    className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors font-medium"
+                    onClick={() => setDeleteModal(initialModalState)}
                 >
                   Cancelar
                 </button>
               </div>
             </Modal>
-          )}
-
-          {/* Botón Agregar empresa */}
-          {!isAdmin && (
-
-          <div className="w-full flex justify-end mt-8">
-            <button
-              className="bg-green-800 hover:scale-105 hover:animate-pulse hover:bg-green-950 cursor-pointer px-4 py-2 rounded font-black text-white flex items-center gap-2"
-              onClick={() => navigate("/registrar-empresa")}
-            >
-              Agregar empresa
-              <span className="material-symbols-outlined">add</span>
-            </button>
-          </div>
-          )}
-        </div>
+        )}
       </div>
-    </div>
   );
 };
 
 function Modal({ children, onClose }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm ">
-      <div className="bg-green-900/90 rounded-xl p-6 min-w-[420px] min-h-[420px] relative border-b-8 border-l-8 border-r-2 border-t-2 border-green-200">
-        {children}
-        <button
-          className="absolute top-2 right-2 text-white text-2xl"
-          onClick={onClose}
-        >
-          ×
-        </button>
+      <div className="fixed inset-0 z-50 overflow-y-auto">
+        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={onClose}></div>
+          <span className="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+          <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 relative">
+            <button
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                onClick={onClose}
+            >
+              <X className="h-6 w-6" />
+            </button>
+            {children}
+          </div>
+        </div>
       </div>
-    </div>
   );
 }
 

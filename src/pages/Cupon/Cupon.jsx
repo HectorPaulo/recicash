@@ -1,445 +1,352 @@
-/* eslint-disable no-unused-vars */
-      import { useEffect, useState } from "react";
-      import axios from "axios";
-      import { useAuth } from "../../contexts/AuthContext.jsx";
+import { useEffect, useState } from "react";
+                  import axios from "axios";
+                  import { useAuth } from "../../contexts/AuthContext.jsx";
 
-      const initialModalState = { show: false, cupon: null };
+                  const initialModalState = { show: false, cupon: null };
 
-      const Cupon = () => {
-        const [cupones, setCupones] = useState([]);
-        const [selected, setSelected] = useState(null);
-        const [createModal, setCreateModal] = useState(false);
-        const [editModal, setEditModal] = useState(initialModalState);
-        const [deleteModal, setDeleteModal] = useState(initialModalState);
-        const [form, setForm] = useState({
-          titulo: "",
-          detalles: "",
-          precio: "",
-          cantidad: "",
-          fechaExpiracion: "",
-        });
-        const { currentUser } = useAuth();
-        const [personasModal, setPersonasModal] = useState({ show: false, personas: [] });
-        const empresaId = currentUser?.id || currentUser?.user_id?.id;
+                  const Cupon = () => {
+                    const [cupones, setCupones] = useState([]);
+                    const [detailsModal, setDetailsModal] = useState(initialModalState);
+                    const [createModal, setCreateModal] = useState(false);
+                    const [editModal, setEditModal] = useState(initialModalState);
+                    const [deleteModal, setDeleteModal] = useState(initialModalState);
+                    const [form, setForm] = useState({
+                      titulo: "",
+                      detalles: "",
+                      precio: "",
+                      cantidad: "",
+                      fechaExpiracion: "",
+                    });
+                    const { currentUser } = useAuth();
+                    const empresaId = currentUser?.id || currentUser?.user_id?.id;
 
-        const fetchPersonasDeCupon = async (cuponId) => {
-          try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL}/cupon/${cuponId}`);
-            const personasIds = res.data.personas || [];
-            const personas = await Promise.all(
-              personasIds.map(async (id) => {
-                const r = await axios.get(
-                  `${import.meta.env.VITE_API_URL}/cliente/${id}`,
-                  {
-                    headers: {
-                      Authorization: `Bearer ${localStorage.getItem("recicash_token")}`,
-                    },
-                  }
-                );
-                return r.data;
-              })
-            );
-            setPersonasModal({ show: true, personas });
-          } catch (e) {
-            setPersonasModal({ show: true, personas: [] });
-          }
-        };
+                    const fetchCupones = async () => {
+                      try {
+                        const res = await axios.get(
+                          `${import.meta.env.VITE_API_URL}/cupon/empresa/${empresaId}`
+                        );
+                        setCupones(Array.isArray(res.data.cupones) ? res.data.cupones : []);
+                      } catch (error) {
+                        setCupones([]);
+                      }
+                    };
 
-        const fetchCupones = async () => {
-          try {
-            const res = await axios.get(
-              `${import.meta.env.VITE_API_URL}/cupon/empresa/${empresaId}`
-            );
-            setCupones(Array.isArray(res.data.cupones) ? res.data.cupones : []);
-          } catch (error) {
-            setCupones([]);
-          }
-        };
+                    useEffect(() => {
+                      if (empresaId) fetchCupones();
+                      // eslint-disable-next-line
+                    }, [empresaId]);
 
-        useEffect(() => {
-          if (empresaId) fetchCupones();
-          // eslint-disable-next-line
-        }, [empresaId]);
+                    // Progress bar
+                    const getProgress = (cupon) => {
+                      const total = cupon.cantidad || 1;
+                      const ocupados = cupon.cuposOcupados || 0;
+                      return Math.min(100, Math.round(((total - ocupados) / total) * 100));
+                    };
 
-        const handleCreate = async (e) => {
-          e.preventDefault();
-          if (!empresaId) {
-            alert("No se encontró el ID de la empresa. No se puede crear el cupón.");
-            return;
-          }
-          try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/cupon`, {
-              ...form,
-              empresa: empresaId,
-            });
-            setCreateModal(false);
-            setForm({
-              titulo: "",
-              detalles: "",
-              precio: "",
-              cantidad: "",
-              fechaExpiracion: "",
-            });
-            fetchCupones();
-          } catch (error) {
-            alert("Error al crear cupón: " + (error.response?.data?.message || error.message));
-          }
-        };
+                    // Crear cupón
+                    const handleCreate = async (e) => {
+                      e.preventDefault();
+                      try {
+                        await axios.post(`${import.meta.env.VITE_API_URL}/cupon`, {
+                          ...form,
+                          empresa: empresaId,
+                        });
+                        setCreateModal(false);
+                        setForm({
+                          titulo: "",
+                          detalles: "",
+                          precio: "",
+                          cantidad: "",
+                          fechaExpiracion: "",
+                        });
+                        fetchCupones();
+                      } catch (error) {
+                        alert("Error al crear cupón");
+                      }
+                    };
 
-        const handleEdit = (cupon) => {
-          setForm({
-            titulo: cupon.titulo,
-            detalles: cupon.detalles,
-            precio: cupon.precio,
-            cantidad: cupon.cantidad,
-            fechaExpiracion: cupon.fechaExpiracion,
-          });
-          setEditModal({ show: true, cupon });
-        };
-
-        const handleEditSubmit = async (e) => {
-          e.preventDefault();
-          try {
-            await axios.patch(
-              `${import.meta.env.VITE_API_URL}/cupon/${editModal.cupon.id}`,
-              form
-            );
-            setEditModal(initialModalState);
-            setForm({
-              titulo: "",
-              detalles: "",
-              precio: "",
-              cantidad: "",
-              fechaExpiracion: "",
-            });
-            fetchCupones();
-          } catch {
-            alert("Error al editar cupón");
-          }
-        };
-
-        const handleDelete = (cupon) => {
-          setDeleteModal({ show: true, cupon });
-        };
-
-        const confirmDelete = async () => {
-          try {
-            await axios.delete(
-              `${import.meta.env.VITE_API_URL}/cupon/${deleteModal.cupon.id}`
-            );
-            setDeleteModal(initialModalState);
-            fetchCupones();
-          } catch {
-            alert("Error al eliminar cupón");
-          }
-        };
-
-        return (
-          <div className="min-h-screen flex flex-col bg-gradient-to-t from-[#6A994E] to-[#A7C957]">
-            <div className="flex flex-1 p-6 gap-6">
-              <div className="flex flex-col items-center min-w-2/3 justify-start min-h-screen w-full">
-                <h1 className="text-6xl text-white font-black mb-4">Cupones</h1>
-                {/* Botón crear cupón */}
-                <div className="w-full flex justify-end mt-8 max-w-6xl">
-                  <button
-                    className="bg-green-800 hover:scale-105 hover:animate-pulse hover:bg-green-950 cursor-pointer px-4 py-2 rounded font-black text-white flex items-center gap-2"
-                    onClick={() => {
+                    // Editar cupón
+                    const handleEdit = (cupon) => {
                       setForm({
-                        titulo: "",
-                        detalles: "",
-                        precio: "",
-                        cantidad: "",
-                        fechaExpiracion: "",
+                        titulo: cupon.titulo,
+                        detalles: cupon.detalles,
+                        precio: cupon.precio,
+                        cantidad: cupon.cantidad,
+                        fechaExpiracion: cupon.fechaExpiracion?.slice(0, 10),
                       });
-                      setCreateModal(true)
-                    }}
-                  >
-                    Crear cupón
-                    <span className="material-symbols-outlined">add</span>
-                  </button>
-                </div>
-                {/* Cards de cupones */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl mt-12">
-                  {cupones.map((cupon) => (
-                    <div
-                      key={cupon.id}
-                      className={`rounded-2xl shadow-xl bg-green-900/40 border-2 border-green-800 p-6 flex flex-col gap-2 relative transition-all ${
-                        selected?.id === cupon.id ? "ring-4 ring-green-400" : ""
-                      }`}
-                      onClick={() => setSelected(cupon)}
-                    >
-                      <h2 className="text-2xl font-black text-white mb-2">
-                        {cupon.titulo}
-                      </h2>
-                      <p className="text-white mb-1">{cupon.detalles}</p>
-                      <div className="flex flex-wrap gap-2 text-white text-lg font-bold">
-                        <span>
-                          Remuneración: <span className="font-mono">${cupon.precio}</span>
-                        </span>
-                        <span>
-                          Cupos:{" "}
-                          <span className="font-mono">{cupon.cantidad}</span>
-                        </span>
-                      </div>
-                      <div className="text-white text-sm mt-2">
-                        Expira:{" "}
-                        <span className="font-mono">{cupon.fechaExpiracion}</span>
-                      </div>
-                      <div className="flex gap-2 justify-end mt-4">
-                        <button
-                          className="text-blue-500 px-2 py-1 rounded hover:scale-105"
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            await fetchPersonasDeCupon(cupon.id);
-                          }}
-                        >
-                          <span className="material-symbols-outlined">groups</span>
-                        </button>
-                        <button
-                          className="cursor-pointer hover:scale-105 hover:animate-pulse text-yellow-200 px-2 py-1"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEdit(cupon);
-                          }}
-                        >
-                          <span className="material-symbols-outlined">edit</span>
-                        </button>
-                        <button
-                          className="cursor-pointer hover:scale-105 hover:animate-pulse text-red-300 px-2 py-1"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(cupon);
-                          }}
-                        >
-                          <span className="material-symbols-outlined">delete</span>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {/*Modal para mostrar personas suscritas*/}
-                {personasModal.show && (
-                  <Modal onClose={() => setPersonasModal({ show: false, personas: [] })}>
-                    <h2 className="text-3xl font-black text-white mb-4 text-center">
-                      Personas suscritas
-                    </h2>
-                    {personasModal.personas.length === 0 ? (
-                      <div className="text-white text-center">Nadie se ha suscrito aún.</div>
-                    ) : (
-                      <ul className="space-y-2">
-                        {personasModal.personas.map((p, idx) => (
-                          <li key={idx} className="text-white border-b border-green-800 py-1">
-                            <span className="font-bold">{p.nombre || p.id}</span> - {p.email || "Sin email"}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    <div className="flex justify-center mt-4">
-                      <button
-                        className="bg-gray-300 px-4 py-2 rounded font-bold cursor-pointer hover:scale-105 hover:animate-pulse text-green-900"
-                        onClick={() => setPersonasModal({ show: false, personas: [] })}
-                      >
-                        Cerrar
-                      </button>
-                    </div>
-                  </Modal>
-                )}
-                {/* Modal Crear */}
-                {createModal && (
-                  <Modal onClose={() => setCreateModal(false)}>
-                    <h2 className="text-3xl font-black text-white mb-2 text-center">
-                      Crear cupón
-                    </h2>
-                    <form onSubmit={handleCreate} className="space-y-4">
-                      <input
-                        type="text"
-                        name="titulo"
-                        value={form.titulo}
-                        onChange={(e) => setForm({ ...form, titulo: e.target.value })}
-                        placeholder="Título"
-                        className="border-b-2 p-2 w-full border-green-800 bg-transparent text-white"
-                        required
-                      />
-                      <input
-                        type="text"
-                        name="detalles"
-                        value={form.detalles}
-                        onChange={(e) =>
-                          setForm({ ...form, detalles: e.target.value })
-                        }
-                        placeholder="Detalles"
-                        className="border-b-2 p-2 w-full border-green-800 bg-transparent text-white"
-                        required
-                      />
-                      <input
-                        type="number"
-                        name="precio"
-                        value={form.precio}
-                        onChange={(e) => setForm({ ...form, precio: e.target.value })}
-                        placeholder="Precio"
-                        className="border-b-2 p-2 w-full border-green-800 bg-transparent text-white"
-                        required
-                      />
-                      <input
-                        type="number"
-                        name="cantidad"
-                        value={form.cantidad}
-                        onChange={(e) =>
-                          setForm({ ...form, cantidad: e.target.value })
-                        }
-                        placeholder="Cantidad"
-                        className="border-b-2 p-2 w-full border-green-800 bg-transparent text-white"
-                        required
-                      />
-                      <input
-                        type="date"
-                        name="fechaExpiracion"
-                        value={form.fechaExpiracion}
-                        onChange={(e) =>
-                          setForm({ ...form, fechaExpiracion: e.target.value })
-                        }
-                        placeholder="Fecha de expiración"
-                        className="border-b-2 p-2 w-full border-green-800 bg-transparent text-white"
-                        required
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          type="submit"
-                          className="bg-green-800 text-white px-4 py-2 rounded-xl cursor-pointer hover:scale-105 hover:animate-pulse font-black "
-                        >
-                          Crear
-                        </button>
-                        <button
-                          type="button"
-                          className="bg-gray-300 px-4 py-2 rounded-xl font-bold cursor-pointer hover:scale-105 hover:animate-pulse text-green-900"
-                          onClick={() => setCreateModal(false)}
-                        >
-                          Cancelar
-                        </button>
-                      </div>
-                    </form>
-                  </Modal>
-                )}
+                      setEditModal({ show: true, cupon });
+                    };
 
-                {/* Modal Editar */}
-                {editModal.show && (
-                  <Modal onClose={() => setEditModal(initialModalState)}>
-                    <h2 className="text-3xl font-black text-white mb-2 text-center">
-                      Editar cupón
-                    </h2>
-                    <form onSubmit={handleEditSubmit} className="space-y-4">
-                      <input
-                        type="text"
-                        name="titulo"
-                        value={form.titulo}
-                        onChange={(e) => setForm({ ...form, titulo: e.target.value })}
-                        placeholder="Título"
-                        className="border-b-2 p-2 w-full border-green-800 bg-transparent text-white"
-                        required
-                      />
-                      <input
-                        type="text"
-                        name="detalles"
-                        value={form.detalles}
-                        onChange={(e) =>
-                          setForm({ ...form, detalles: e.target.value })
-                        }
-                        placeholder="Detalles"
-                        className="border-b-2 p-2 w-full border-green-800 bg-transparent text-white"
-                        required
-                      />
-                      <input
-                        type="number"
-                        name="precio"
-                        value={form.precio}
-                        onChange={(e) => setForm({ ...form, precio: e.target.value })}
-                        placeholder="Precio"
-                        className="border-b-2 p-2 w-full border-green-800 bg-transparent text-white"
-                        required
-                      />
-                      <input
-                        type="number"
-                        name="cantidad"
-                        value={form.cantidad}
-                        onChange={(e) =>
-                          setForm({ ...form, cantidad: e.target.value })
-                        }
-                        placeholder="Cantidad"
-                        className="border-b-2 p-2 w-full border-green-800 bg-transparent text-white"
-                        required
-                      />
-                      <input
-                        type="date"
-                        name="fechaExpiracion"
-                        value={form.fechaExpiracion}
-                        onChange={(e) =>
-                          setForm({ ...form, fechaExpiracion: e.target.value })
-                        }
-                        placeholder="Fecha de expiración"
-                        className="border-b-2 p-2 w-full border-green-800 bg-transparent text-white"
-                        required
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          type="submit"
-                          className="bg-green-800 text-white px-4 py-2 rounded-xl cursor-pointer hover:scale-105 hover:animate-pulse font-black "
-                        >
-                          Guardar
-                        </button>
-                        <button
-                          type="button"
-                          className="bg-gray-300 px-4 py-2 rounded-xl font-bold cursor-pointer hover:scale-105 hover:animate-pulse text-green-900"
-                          onClick={() => setEditModal(initialModalState)}
-                        >
-                          Cancelar
-                        </button>
+                    const handleEditSubmit = async (e) => {
+                      e.preventDefault();
+                      try {
+                        await axios.patch(
+                          `${import.meta.env.VITE_API_URL}/cupon/${editModal.cupon.id}`,
+                          form
+                        );
+                        setEditModal(initialModalState);
+                        setForm({
+                          titulo: "",
+                          detalles: "",
+                          precio: "",
+                          cantidad: "",
+                          fechaExpiracion: "",
+                        });
+                        fetchCupones();
+                      } catch {
+                        alert("Error al editar cupón");
+                      }
+                    };
+
+                    // Eliminar cupón
+                    const handleDelete = (cupon) => {
+                      setDeleteModal({ show: true, cupon });
+                    };
+
+                    const confirmDelete = async () => {
+                      try {
+                        await axios.delete(
+                          `${import.meta.env.VITE_API_URL}/cupon/${deleteModal.cupon.id}`
+                        );
+                        setDeleteModal(initialModalState);
+                        fetchCupones();
+                      } catch {
+                        alert("Error al eliminar cupón");
+                      }
+                    };
+
+                    return (
+                      <div className="min-h-screen bg-gradient-to-t py-10 px-2">
+                        <div className="max-w-5xl mx-auto mb-8 flex justify-between items-center">
+                          <h2 className="text-3xl font-bold text-gray-900">Cupones de mi empresa</h2>
+                          <button
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium"
+                            onClick={() => setCreateModal(true)}
+                          >
+                            + Crear cupón
+                          </button>
+                        </div>
+                        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                          {cupones.map((cupon) => (
+                            <div
+                              key={cupon.id}
+                              className="rounded-xl border border-gray-200 p-6 flex flex-col items-center"
+                            >
+                              <h3 className="text-xl font-bold text-gray-900 mb-2">{cupon.titulo}</h3>
+                              <p className="text-lg text-green-700 font-semibold mb-2">${cupon.precio}</p>
+                              <div className="w-full mb-2">
+                                <div className="flex justify-between text-xs text-gray-500 mb-1">
+                                  <span>Cupos: {cupon.cantidad - (cupon.cuposOcupados || 0)} / {cupon.cantidad}</span>
+                                  <span>{getProgress(cupon)}%</span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-3">
+                                  <div
+                                    className="bg-emerald-500 h-3 rounded-full transition-all"
+                                    style={{ width: `${getProgress(cupon)}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                              <div className="flex gap-2 mt-4">
+                                <button
+                                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg text-sm"
+                                  onClick={() => setDetailsModal({ show: true, cupon })}
+                                >
+                                  <span className="material-symbols-outlined">Visibility</span>
+                                </button>
+                                <button
+                                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"
+                                  onClick={() => handleEdit(cupon)}
+                                >
+                                    <span className="material-symbols-outlined">Edit</span>
+                                </button>
+                                <button
+                                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+                                  onClick={() => handleDelete(cupon)}
+                                >
+                                    <span className="material-symbols-outlined">Delete</span>
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Modal Crear */}
+                        {createModal && (
+                          <Modal onClose={() => setCreateModal(false)}>
+                            <h3 className="text-2xl font-bold mb-4 text-white">Crear Cupón</h3>
+                            <form onSubmit={handleCreate} className="space-y-4">
+                              <input
+                                className="w-full rounded-lg px-3 py-2"
+                                placeholder="Título"
+                                value={form.titulo}
+                                onChange={e => setForm({ ...form, titulo: e.target.value })}
+                                required
+                              />
+                              <textarea
+                                className="w-full rounded-lg px-3 py-2"
+                                placeholder="Detalles"
+                                value={form.detalles}
+                                onChange={e => setForm({ ...form, detalles: e.target.value })}
+                                required
+                              />
+                              <input
+                                className="w-full rounded-lg px-3 py-2"
+                                placeholder="Precio"
+                                type="number"
+                                value={form.precio}
+                                onChange={e => setForm({ ...form, precio: e.target.value })}
+                                required
+                              />
+                              <input
+                                className="w-full rounded-lg px-3 py-2"
+                                placeholder="Cantidad"
+                                type="number"
+                                value={form.cantidad}
+                                onChange={e => setForm({ ...form, cantidad: e.target.value })}
+                                required
+                              />
+                              <input
+                                className="w-full rounded-lg px-3 py-2"
+                                placeholder="Fecha de expiración"
+                                type="date"
+                                value={form.fechaExpiracion}
+                                onChange={e => setForm({ ...form, fechaExpiracion: e.target.value })}
+                                required
+                              />
+                              <div className="flex gap-4 mt-4">
+                                <button
+                                  type="submit"
+                                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium"
+                                >
+                                  Crear
+                                </button>
+                                <button
+                                  type="button"
+                                  className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium"
+                                  onClick={() => setCreateModal(false)}
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            </form>
+                          </Modal>
+                        )}
+
+                        {/* Modal Editar */}
+                        {editModal.show && (
+                          <Modal onClose={() => setEditModal(initialModalState)}>
+                            <h3 className="text-2xl font-bold mb-4 text-white">Editar Cupón</h3>
+                            <form onSubmit={handleEditSubmit} className="space-y-4">
+                              <input
+                                className="w-full rounded-lg px-3 py-2"
+                                placeholder="Título"
+                                value={form.titulo}
+                                onChange={e => setForm({ ...form, titulo: e.target.value })}
+                                required
+                              />
+                              <textarea
+                                className="w-full rounded-lg px-3 py-2"
+                                placeholder="Detalles"
+                                value={form.detalles}
+                                onChange={e => setForm({ ...form, detalles: e.target.value })}
+                                required
+                              />
+                              <input
+                                className="w-full rounded-lg px-3 py-2"
+                                placeholder="Precio"
+                                type="number"
+                                value={form.precio}
+                                onChange={e => setForm({ ...form, precio: e.target.value })}
+                                required
+                              />
+                              <input
+                                className="w-full rounded-lg px-3 py-2"
+                                placeholder="Cantidad"
+                                type="number"
+                                value={form.cantidad}
+                                onChange={e => setForm({ ...form, cantidad: e.target.value })}
+                                required
+                              />
+                              <input
+                                className="w-full rounded-lg px-3 py-2"
+                                placeholder="Fecha de expiración"
+                                type="date"
+                                value={form.fechaExpiracion}
+                                onChange={e => setForm({ ...form, fechaExpiracion: e.target.value })}
+                                required
+                              />
+                              <div className="flex gap-4 mt-4">
+                                <button
+                                  type="submit"
+                                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
+                                >
+                                  Guardar
+                                </button>
+                                <button
+                                  type="button"
+                                  className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium"
+                                  onClick={() => setEditModal(initialModalState)}
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            </form>
+                          </Modal>
+                        )}
+
+                        {/* Modal Eliminar */}
+                        {deleteModal.show && (
+                          <Modal onClose={() => setDeleteModal(initialModalState)}>
+                            <h3 className="text-2xl font-bold mb-4 text-white">Eliminar Cupón</h3>
+                            <p className="mb-6 text-white">¿Estás seguro de que deseas eliminar este cupón?</p>
+                            <div className="flex gap-4">
+                              <button
+                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium"
+                                onClick={confirmDelete}
+                              >
+                                Eliminar
+                              </button>
+                              <button
+                                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium"
+                                onClick={() => setDeleteModal(initialModalState)}
+                              >
+                                Cancelar
+                              </button>
+                            </div>
+                          </Modal>
+                        )}
+
+                        {/* Modal de detalles */}
+                        {detailsModal.show && (
+                          <Modal onClose={() => setDetailsModal(initialModalState)}>
+                            <h3 className="text-2xl font-bold mb-4 text-white">{detailsModal.cupon.titulo}</h3>
+                            <div className="text-white space-y-2">
+                              <p><span className="font-semibold">Precio:</span> ${detailsModal.cupon.precio}</p>
+                              <p><span className="font-semibold">Cupos totales:</span> {detailsModal.cupon.cantidad}</p>
+                              <p><span className="font-semibold">Cupos disponibles:</span> {detailsModal.cupon.cantidad - (detailsModal.cupon.cuposOcupados || 0)}</p>
+                              <p><span className="font-semibold">Detalles:</span> {detailsModal.cupon.detalles}</p>
+                              <p><span className="font-semibold">Expira:</span> {new Date(detailsModal.cupon.fechaExpiracion).toLocaleDateString()}</p>
+                            </div>
+                          </Modal>
+                        )}
                       </div>
-                    </form>
-                  </Modal>
-                )}
+                    );
+                  };
 
-                {/* Modal Eliminar */}
-                {deleteModal.show && (
-                  <Modal onClose={() => setDeleteModal(initialModalState)}>
-                    <h2 className="text-xl font-black mb-4 text-white">
-                      ¿Eliminar cupón "{deleteModal.cupon.titulo}"?
-                    </h2>
-                    <div className="flex gap-2 items-end justify-center h-50">
-                      <button
-                        className="bg-red-600 cursor-pointer hover:scale-105 hover:animate-pulse text-white px-4 py-2 rounded"
-                        onClick={confirmDelete}
-                      >
-                        Eliminar
-                      </button>
-                      <button
-                        className="bg-gray-300 px-4 py-2 rounded cursor-pointer hover:scale-105 hover:animate-pulse text-green-900"
-                        onClick={() => setDeleteModal(initialModalState)}
-                      >
-                        Cancelar
-                      </button>
-                    </div>
-                  </Modal>
-                )}
-              </div>
-            </div>
-          </div>
-        );
-      };
+                  function Modal({ children, onClose }) {
+                    return (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
+                        <div className="bg-green-900/90 rounded-xl p-8 min-w-[350px] min-h-[200px] relative border-b-8 border-l-8 border-r-2 border-t-2 border-green-800 shadow-2xl">
+                          <button
+                            className="absolute top-3 right-3 text-white text-2xl font-bold hover:text-gray-200"
+                            onClick={onClose}
+                          >
+                            ×
+                          </button>
+                          {children}
+                        </div>
+                      </div>
+                    );
+                  }
 
-      function Modal({ children, onClose }) {
-        return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm ">
-            <div className="bg-green-900/90 rounded-xl p-6 min-w-[420px] min-h-[420px] relative border-b-8 border-l-8 border-r-2 border-t-2 border-green-800">
-              {children}
-              <button
-                className="absolute top-2 right-2 text-white text-2xl"
-                onClick={onClose}
-              >
-                ×
-              </button>
-            </div>
-          </div>
-        );
-      }
-
-      export default Cupon;
+                  export default Cupon;

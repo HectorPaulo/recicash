@@ -65,7 +65,7 @@ import { useRef, useEffect, useState } from "react";
                       <>
                         <nav
                           ref={navbarRef}
-                          className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-sm"
+                          className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200"
                         >
                           {/* Versión de escritorio */}
                           <div className="hidden lg:block mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -113,6 +113,9 @@ import { useRef, useEffect, useState } from "react";
                                       className="text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                                     >
                                       Gestión de Empresas
+                                    </Link>
+                                    <Link to='/cupon-admin'                                       className="text-gray-700 hover:text-emerald-600 hover:bg-emerald-50 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200">
+                                      Cupones
                                     </Link>
                                     <Link
                                       to="/registrar-empresa"

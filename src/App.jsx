@@ -25,6 +25,7 @@ import Empresas from "./pages/Empresas/Empresas";
 import ClienteCupones from "./pages/Cupon/CuponCliente";
 import Navbar from "./Components/Navbar/Navbar.jsx";
 import {PuntosProvider} from "./contexts/PuntosProvider.tsx";
+import CuponAdmin from "./pages/Cupon/CuponAdmin.js";
 
 function ProtectedRoute() {
   const { currentUser, isAuthenticated } = useAuth();
@@ -58,21 +59,25 @@ function AppRoutes() {
           {/*Rutas solo para cliente*/}
           <Route element={<ProtectedByRole allowedRoles={["cliente"]} />}>
             <Route path="/mis-cupones" element={<ClienteCupones />} />
-          <Route path="/movimientosrecientes" element={<RecentMovements />} />
           </Route>
 
-          {/* Rutas solo para empresa */}
+          {/*Rutas para clientes y empresas*/}
+          <Route element={<ProtectedByRole allowedRoles={["cliente", "empresa"]} /> }>
+            <Route path="/movimientosrecientes" element={<RecentMovements />} />
+          </Route>
+
+
+
+          {/* Rutas solo para empresa y admin */}
           <Route element={<ProtectedByRole allowedRoles={["empresa"]} />}>
-          <Route path="/cupon" element={<Cupon />} />
-          <Route path="/movimientosrecientes" element={<RecentMovements />} />
             <Route path="/cupon" element={<Cupon />} />
           </Route>
 
           {/* Rutas solo para admin */}
           <Route element={<ProtectedByRole allowedRoles={["admin"]} />}>
-            <Route path="/cupon" element={<Cupon />}></Route>
           <Route path="/clientes" element={<ClientesList />} />
             <Route path="/empresas" element={<Empresas />} />
+            <Route path="/cupon-admin" element={<CuponAdmin />} />
             <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
           </Route>
         </Route>
