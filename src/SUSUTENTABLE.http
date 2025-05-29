@@ -68,6 +68,7 @@ Content-Type: application/json
   "titulo": "Cupon 1",
   "precio": 50,
   "cantidad": 10,
+  "cantidadInicial": 10,
   "detalles": "Hola, este es un cupón de prueba",
   "fechaExpiracion": "2025-12-31",
   "empresa": "29ecec30-09de-470b-8f21-10783b2938a4"

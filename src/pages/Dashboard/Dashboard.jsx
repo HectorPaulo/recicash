@@ -364,7 +364,7 @@ import React, { useEffect, useState } from "react";
                         color="indigo"
                       />
                       <KpiCard
-                        title={isCliente ? "Puntos Acumulados" : "Valor Total"}
+                        title={isCliente ? "Puntos Acumulados" : "Valor total de cupones activos"}
                         value={isCliente ? puntos : `$${stats.totalValor.toLocaleString()}`}
                         icon={
                           <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

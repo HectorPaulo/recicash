@@ -104,11 +104,10 @@
       }
     };
 
-    // Progress bar
-    const getProgress = (cupon) => {
-      const total = cupon.cantidad || 1;
-      const ocupados = cupon.cuposOcupados || 0;
-      return Math.min(100, Math.round(((total - ocupados) / total) * 100));
+const getProgress = (cupon) => {
+      const total = cupon.cantidadInicial || cupon.cuposTotales || cupon.cantidad + (cupon.cuposOcupados || 0) || 1;
+      const ocupados = total - cupon.cantidad;
+      return Math.min(100, Math.round((ocupados / total) * 100));
     };
 
     // Obtener nombre de empresa seguro
@@ -141,7 +140,9 @@
                 </div>
                 <div className="w-full mb-2">
                   <div className="flex justify-between text-xs text-gray-500 mb-1">
-                    <span>Cupos: {cupon.cantidad - (cupon.cuposOcupados || 0)} / {cupon.cantidad}</span>
+                    <span>
+                      Cupos: {cupon.cantidad} / {cupon.cantidadInicial || cupon.cuposTotales || cupon.cantidad + (cupon.cuposOcupados || 0)}
+                    </span>
                     <span>{getProgress(cupon)}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">

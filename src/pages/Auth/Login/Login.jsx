@@ -35,7 +35,7 @@ const Login = () => {
   };
 
   return (
-      <div className="relative flex items-center justify-center h-screen w-screen overflow-hidden bg-gray-900">
+      <div className="relative flex items-center px-2 py-2 h-screen w-screen overflow-hidden bg-gray-900">
         {/* Fondo dinámico */}
         <div className="absolute inset-0 w-full h-full z-0">
           <GridDistortion
@@ -49,7 +49,7 @@ const Login = () => {
         </div>
 
         {/* Formulario */}
-        <div className="relative z-10 w-full max-w-md px-8 py-12 backdrop-blur-lg bg-black/50 rounded-3xl shadow-2xl">
+        <div className="relative z-10 w-full max-w-2xl px-8 py-12 backdrop-blur-sm bg-black/40  rounded-lg shadow-2xl max-h-screen h-full  ">
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="text-center">
               <svg
@@ -64,9 +64,9 @@ const Login = () => {
               <p className="text-gray-300 mt-2 text-sm">Sistema de Gestión Empresarial</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="flex flex-col space-y-12 my-20 items-center">
               <input
-                  className="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-2/3 px-4 py-2 rounded-lg bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="Correo electrónico"
                   type="email"
                   name="email"
@@ -75,7 +75,7 @@ const Login = () => {
                   required
               />
               <input
-                  className="w-full px-4 py-2 rounded-lg bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="w-2/3 px-4 py-2 rounded-lg bg-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="Contraseña"
                   type="password"
                   name="password"
@@ -85,10 +85,11 @@ const Login = () => {
               />
             </div>
 
+            <div className="flex flex-col items-center mb-15">
             <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full py-3 rounded-lg bg-green-600 hover:bg-green-700 transition-all text-white font-semibold shadow-lg ${
+                className={`w-1/2 py-3 rounded-lg bg-gradient-to-l from-green-700 to-green-950 cursor-pointer hover:scale-105 hover:bg-gradient-to-l hover:from-green-500 hover:to-green-800 transition-all text-white font-semibold shadow-lg ${
                     isLoading ? "opacity-60 cursor-not-allowed" : ""
                 }`}
             >
@@ -101,6 +102,7 @@ const Login = () => {
                   "Entrar"
               )}
             </button>
+            </div>
 
             <p className="text-sm text-gray-300 text-center">
               ¿No tienes cuenta?{" "}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
                               import { useParams } from "react-router-dom";
                               import axios from "axios";
 
@@ -55,6 +56,29 @@ import { useEffect, useState } from "react";
                                     });
                                 };
 
+const handleDesuscribir = async (cuponId) => {
+  if (!clienteId) return;
+  try {
+    await axios.delete(
+      `${import.meta.env.VITE_API_URL}/cupon/${cuponId}/remover-cliente/${clienteId}`
+    );
+    fetchCupones();
+    Swal.fire({
+      icon: "success",
+      title: "Desuscripción exitosa",
+      text: "Te has desuscrito del cupón correctamente.",
+      timer: 1800,
+      showConfirmButton: false,
+    });
+  } catch {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "No pudiste desuscribirte del cupón. ¡ESTÁS ATRAPADO😱😰😨!",
+    });
+  }
+};
+
                                 const handleParticipar = async (cupon) => {
                                   if (!clienteId) {
                                     alert("No se encontró el cliente.");
@@ -89,11 +113,17 @@ import { useEffect, useState } from "react";
                                 };
 
                                 // Calcula el porcentaje de cupos ocupados
+                                // Calcula el porcentaje de cupos ocupados
                                 const getProgress = (cupon) => {
-                                  const total = cupon.cantidadInicial || cupon.cantidad || 1;
+                                  const total = cupon.cantidadInicial || cupon.cuposTotales || cupon.cantidad + (cupon.cuposOcupados || 0) || 1;
                                   const ocupados = total - cupon.cantidad;
                                   return Math.min(100, Math.round((ocupados / total) * 100));
                                 };
+
+                                // // Mostrar cupos disponibles / totales
+                                // <span>
+                                //   Cupos: {cupon.cantidad} / {cupon.cantidadInicial || cupon.cuposTotales || cupon.cantidad + (cupon.cuposOcupados || 0)}
+                                // </span>
 
                                 if (!clienteId) {
                                   return (
@@ -233,9 +263,9 @@ import { useEffect, useState } from "react";
                                                   <tr>
                                                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Título</th>
                                                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
-                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Cupos</th>
                                                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Expira</th>
                                                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Empresa</th>
+                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                                                   </tr>
                                                 </thead>
                                                 <tbody className="bg-white divide-y divide-gray-100">
@@ -243,9 +273,16 @@ import { useEffect, useState } from "react";
                                                     <tr key={cupon.id} className="hover:bg-gray-50 transition-colors">
                                                       <td className="px-4 py-2 font-medium text-gray-900">{cupon.titulo || cupon.nombre}</td>
                                                       <td className="px-4 py-2 text-gray-700">${cupon.precio?.toLocaleString()}</td>
-                                                      <td className="px-4 py-2 text-gray-700">{cupon.cantidad}</td>
                                                       <td className="px-4 py-2 text-gray-700">{new Date(cupon.fechaExpiracion).toLocaleDateString()}</td>
                                                       <td className="px-4 py-2 text-gray-700">{cupon.empresa?.nombre || "-"}</td>
+                                                      <td className="pl-9 py-1 rounded font-medium text-xs"
+                                                      onClick={() => handleDesuscribir(cupon.id)}>
+                                                        <button onClick={() => handleDesuscribir(cupon.id)} className="cursor-pointer hover:scale-105 text-red-700 py-1 rounded font-medium text-xs">
+                                                          <span className="material-symbols-outlined">
+delete_forever
+</span>
+                                                        </button>
+                                                      </td>
                                                     </tr>
                                                   ))}
                                                 </tbody>
