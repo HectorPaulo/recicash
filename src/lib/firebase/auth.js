@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Registro
+// Registro de usuario
 export const registerWithEmailAndPassword = async (
   nombre,
   email,
@@ -19,7 +19,7 @@ export const registerWithEmailAndPassword = async (
   }
 };
 
-// Login
+// Login de usuario
 export const loginWithEmailAndPassword = async (email, password) => {
   try {
     const response = await axios.post(`${API_URL}/auth/login`, {
@@ -41,19 +41,50 @@ export const getUserFromToken = async (token) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data; // Aquí debe venir el rol
+    return response.data;
   } catch (error) {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      throw { code: error.response.status, message: "Sesión expirada o permisos insuficientes" };
+    }
     console.error("Error al obtener usuario por token: ", error);
     throw error;
   }
 };
 
+// Buscar cliente por email (requiere token)
 export const getClienteByEmail = async (token, email) => {
-  const response = await axios.get(`${API_URL}/cliente`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  // Busca el cliente cuyo user_id.email coincida
-  return response.data.find((cliente) => cliente.user_id.email === email);
+  try {
+    if (!token) throw { code: 401, message: "Token no presente. Inicia sesión de nuevo." };
+    const response = await axios.get(`${API_URL}/cliente`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.find((cliente) => cliente.user_id.email === email);
+  } catch (error) {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      throw { code: error.response.status, message: "Sesión expirada o permisos insuficientes" };
+    }
+    console.error("Error al buscar cliente por email: ", error);
+    throw error;
+  }
+};
+
+// Buscar empresa por email (requiere token)
+export const getEmpresaByEmail = async (token, email) => {
+  try {
+    if (!token) throw { code: 401, message: "Token no presente. Inicia sesión de nuevo." };
+    const response = await axios.get(`${API_URL}/empresa`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.find((empresa) => empresa.user_id.email === email);
+  } catch (error) {
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+      throw { code: error.response.status, message: "Sesión expirada o permisos insuficientes" };
+    }
+    console.error("Error al buscar empresa por email: ", error);
+    throw error;
+  }
 };

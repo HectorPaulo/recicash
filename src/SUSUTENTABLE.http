@@ -158,7 +158,7 @@ GET https://proyectodesarrollo-94d5.onrender.com/api/empresa/b9f346da-bc4a-416e-
 # group: Empresa
 # @name Get Alll
 GET https://proyectodesarrollo-94d5.onrender.com/api/empresa
-
+Authorization: Bearer {{set_token}}
 ###
 # group: Empresa
 # @name Actualizar un empresa
@@ -237,12 +237,11 @@ Content-Type: application/json
 # group: Auth
 # @name POST LOGIN
 POST https://proyectodesarrollo-94d5.onrender.com/api/auth/login
-Authorization: Bearer {{set_token}}
 Content-Type: application/json
 
 {
-  "email": "admin@email.com",
-  "password": "Adminpas123s---"
+  "email": "juntosporchiapas@mail.com",
+  "password": "Pass12"
 }
 
 ###

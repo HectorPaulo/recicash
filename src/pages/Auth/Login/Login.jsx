@@ -27,7 +27,7 @@ const Login = () => {
       const from = location.state?.from || "/dashboard";
       navigate(from, { replace: true });
     } catch (err) {
-      await Swal.fire("Error", "Error inesperado al iniciar sesión", "error");
+      await Swal.fire("Error", err.message || "Error inesperado al iniciar sesión", "error");
       console.error(err);
     } finally {
       setIsLoading(false);

@@ -38,7 +38,7 @@ const Signin = () => {
       await Swal.fire("¡Registro exitoso!", "Tu cuenta ha sido creada.", "success");
       navigate("/dashboard");
     } catch (err) {
-      Swal.fire("Error", "Error inesperado al registrar usuario", "error");
+      Swal.fire("Error", err.message || "Error inesperado al registrar usuario", "error");
       console.error(err);
     } finally {
       setIsLoading(false);

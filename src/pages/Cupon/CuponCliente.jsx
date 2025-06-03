@@ -47,7 +47,11 @@ import Swal from "sweetalert2";
                                         ? res.data.cupones
                                         : [];
                                       setCuponesCliente(cupones);
-                                      const puntos = cupones.reduce((acc, cupon) => acc + (cupon.precio || 0), 0);
+                                      // Solo suma puntos de cupones autorizados
+                                      const puntos = cupones.reduce(
+                                        (acc, cupon) => acc + (cupon.autorizado ? (cupon.precio || 0) : 0),
+                                        0
+                                      );
                                       setPuntosCliente(puntos);
                                     })
                                     .catch(() => {
@@ -94,17 +98,10 @@ const handleDesuscribir = async (cuponId) => {
                                       `${import.meta.env.VITE_API_URL}/cupon/${cupon.id}/agregar-cliente/${clienteId}`
                                     );
                                     await axios.patch(
-                                        `${import.meta.env.VITE_API_URL}/cliente/${clienteId}/puntos`,
-                                        { puntos: -cupon.precio }
-                                    )
-                                    await axios.patch(
                                       `${import.meta.env.VITE_API_URL}/cupon/${cupon.id}`,
                                       { cantidad: cupon.cantidad - 1 }
                                     );
-                                    await axios.patch(
-                                      `${import.meta.env.VITE_API_URL}/cliente/${clienteId}/puntos`,
-                                      { puntos: cupon.precio }
-                                    );
+                                    // Ya NO se asignan puntos automáticamente aquí.
                                     fetchCupones();
                                   } catch {
                                     fetchCupones();
@@ -179,15 +176,15 @@ const handleDesuscribir = async (cuponId) => {
                                                 .map((cupon) => (
                                                   <div
                                                     key={cupon.id}
-                                                    className="rounded-xl border border-gray-200 bg-gray-50 p-6 flex flex-col gap-2 shadow hover:shadow-lg transition"
+                                                    className="rounded-xl border border-gray-200 bg-gray-50 p-6 flex flex-col gap-2 shadow hover:shadow-lg transition text-gray-900"
                                                   >
                                                     <h3 className="text-lg font-bold text-gray-900 mb-1">
                                                       {cupon.titulo || cupon.nombre}
                                                     </h3>
-                                                    <p className="text-gray-700 mb-1 text-sm">
+                                                    <p className="text-gray-900 mb-1 text-sm">
                                                       {cupon.detalles || cupon.descripcion}
                                                     </p>
-                                                    <div className="flex flex-wrap gap-2 text-gray-800 text-base font-semibold">
+                                                    <div className="flex flex-wrap gap-2 text-gray-900 text-base font-semibold">
                                                       <span>
                                                         Remuneración: <span className="font-mono">${cupon.precio}</span>
                                                       </span>
@@ -210,11 +207,11 @@ const handleDesuscribir = async (cuponId) => {
                                                         ></div>
                                                       </div>
                                                     </div>
-                                                    <div className="text-gray-500 text-xs mt-2">
+                                                    <div className="text-gray-700 text-xs mt-2">
                                                       Expira: <span className="font-mono">{cupon.fechaExpiracion}</span>
                                                     </div>
                                                     {cupon.empresa?.nombre && (
-                                                      <span className="text-xs text-gray-400 mt-2">
+                                                      <span className="text-xs text-gray-500 mt-2">
                                                         Empresa: {cupon.empresa.nombre}
                                                       </span>
                                                     )}
@@ -258,7 +255,7 @@ const handleDesuscribir = async (cuponId) => {
                                             </div>
                                           ) : (
                                             <div className="overflow-x-auto">
-                                              <table className="min-w-full divide-y divide-gray-200">
+                                              <table className="min-w-full divide-y divide-gray-200 text-gray-900">
                                                 <thead className="bg-gray-50">
                                                   <tr>
                                                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Título</th>

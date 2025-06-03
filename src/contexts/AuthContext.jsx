@@ -5,6 +5,7 @@ import {
   loginWithEmailAndPassword,
   registerWithEmailAndPassword,
   getClienteByEmail,
+    getEmpresaByEmail
 } from "../lib/firebase/auth";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -49,8 +50,7 @@ export function AuthProvider({ children }) {
     const TIMEOUT_MS = 20000;
     const timeoutPromise = new Promise((_, reject) =>
       setTimeout(
-        () =>
-          reject({ message: "Tiempo de espera agotado. Intenta de nuevo." }),
+        () => reject({ message: "Tiempo de espera agotado. Intenta de nuevo." }),
         TIMEOUT_MS
       )
     );
@@ -62,23 +62,12 @@ export function AuthProvider({ children }) {
       if (data.token) {
         localStorage.setItem("recicash_token", data.token);
 
-        // 1. Buscar cliente por email
+        // Buscar cliente por email
         let usuario = await getClienteByEmail(data.token, email);
 
-        // 2. Si no es cliente, buscar empresa por email
+        // Si no es cliente, buscar empresa por email
         if (!usuario) {
-          // Nueva función para buscar empresa por email
-          const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/empresa`,
-            {
-              headers: {
-                Authorization: `Bearer ${data.token}`,
-              },
-            }
-          );
-          usuario = response.data.find(
-            (empresa) => empresa.user_id.email === email
-          );
+          usuario = await getEmpresaByEmail(data.token, email);
         }
 
         if (usuario) {
