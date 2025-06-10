@@ -157,7 +157,6 @@ GET https://proyectodesarrollo-94d5.onrender.com/api/empresa/b9f346da-bc4a-416e-
 # group: Empresa
 # @name Get Alll
 GET https://proyectodesarrollo-94d5.onrender.com/api/empresa
-Authorization: Bearer {{set_token}}
 ###
 # group: Empresa
 # @name Actualizar un empresa
@@ -176,8 +175,8 @@ DELETE https://proyectodesarrollo-94d5.onrender.com/api/empresa/b9f346da-bc4a-41
 Content-Type: text/plain
 
 {
-  "user_id": "b9f346da-bc4a-416e-983f-deb4a92960d3",
-  "empresa": "Mi Empresa",
+  "user_id": "5afa48c2-8268-40d4-947e-13e7803c9914",
+  "empresa": "memudevs",
   "ubicacion": "Ciudad de México"
 }
 

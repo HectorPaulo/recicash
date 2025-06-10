@@ -45,9 +45,9 @@ const Cupon = () => {
     if (
       !form.titulo.trim() ||
       !form.detalles.trim() ||
-      !form.precio.trim() ||
-      !form.cantidad.trim() ||
-      !form.fechaExpiracion.trim()
+      form.precio === "" ||
+      form.cantidad === "" ||
+      !form.fechaExpiracion === ""
     ) {
       setFormError("Todos los campos son obligatorios.");
       return false;
@@ -60,6 +60,10 @@ const Cupon = () => {
       setFormError("La cantidad debe ser mayor a 0.");
       return false;
     }
+    if (Number(form.precio) < 0) {
+      setFormError("El precio no puede ser negativo.");
+      return false;
+    }
     setFormError("");
     return true;
   };
@@ -68,13 +72,6 @@ const Cupon = () => {
     if (empresaId) fetchCupones();
     // eslint-disable-next-line
   }, [empresaId]);
-
-  // Progress bar
-  const getProgress = (cupon) => {
-    const total = cupon.cantidadInicial || cupon.cuposTotales || cupon.cantidad + (cupon.cuposOcupados || 0) || 1;
-    const ocupados = total - cupon.cantidad;
-    return Math.min(100, Math.round((ocupados / total) * 100));
-  };
 
   // Crear cupón
   const handleCreate = async (e) => {
@@ -103,11 +100,11 @@ const Cupon = () => {
   // Editar cupón (solo abre el modal y carga datos)
   const handleEdit = (cupon) => {
     setForm({
-      titulo: cupon.titulo,
-      detalles: cupon.detalles,
-      precio: cupon.precio,
-      cantidad: cupon.cantidad,
-      fechaExpiracion: cupon.fechaExpiracion?.slice(0, 10),
+      titulo: cupon.titulo || "",
+      detalles: cupon.detalles || "",
+      precio: cupon.precio ? Number(cupon.precio) : "", // Aseguramos que sea número
+      cantidad: cupon.cantidad ? Number(cupon.cantidad) : "", // Aseguramos que sea número
+      fechaExpiracion: cupon.fechaExpiracion?.slice(0, 10) || "",
     });
     setEditModal({ show: true, cupon });
   };
@@ -296,17 +293,10 @@ const Cupon = () => {
             <h3 className="text-xl font-bold text-gray-900 mb-2">{cupon.titulo}</h3>
             <p className="text-lg text-green-700 font-semibold mb-2">${cupon.precio}</p>
             <div className="w-full mb-2">
-              <div className="flex justify-between text-xs text-gray-500 mb-1">
+              <div className="flex justify-center text-xs text-gray-500 mb-1">
                 <span>
-                  Cupos: {cupon.cantidad} / {cupon.cantidadInicial || cupon.cuposTotales || cupon.cantidad + (cupon.cuposOcupados || 0)}
+                  Cupos: {cupon.cantidad} / {cupon.cantidadInicial || cupon.cantidad}
                 </span>
-                <span>{getProgress(cupon)}%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div
-                  className="bg-emerald-500 h-3 rounded-full transition-all"
-                  style={{ width: `${getProgress(cupon)}%` }}
-                ></div>
               </div>
             </div>
             <div className="flex gap-2 mt-4">
@@ -393,7 +383,7 @@ const Cupon = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
-                  Remuneración (puntos)
+                  Remuneración (dinero)
                 </label>
                 <input
                   type="number"
@@ -466,9 +456,9 @@ const Cupon = () => {
                 <div className="flex items-center">
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-                {formError}
-              </div>
+                  </svg>
+                  {formError}
+                </div>
               </div>
             )}
             
@@ -642,19 +632,6 @@ const Cupon = () => {
                   day: 'numeric'
                 })}
               </span>
-            </div>
-            
-            <div className="p-4 bg-gray-50 rounded-lg border border-gray-100">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-700">Ocupación</span>
-                <span className="text-sm font-medium text-gray-700">{getProgress(detailsModal.cupon)}%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div
-                  className="bg-emerald-500 h-3 rounded-full transition-all"
-                  style={{ width: `${getProgress(detailsModal.cupon)}%` }}
-                ></div>
-              </div>
             </div>
           </div>
           <div className="mt-8 flex justify-end">

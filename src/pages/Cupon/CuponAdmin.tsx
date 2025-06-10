@@ -105,12 +105,6 @@ const CuponAdmin = () => {
     }
   };
 
-  const getProgress = (cupon) => {
-    const total = cupon.cantidadInicial || cupon.cuposTotales || cupon.cantidad + (cupon.cuposOcupados || 0) || 1;
-    const ocupados = total - cupon.cantidad;
-    return Math.min(100, Math.round((ocupados / total) * 100));
-  };
-
   // Obtener nombre de empresa seguro
   const getEmpresaNombre = (empresa) => {
     if (!empresa) return "";
@@ -150,36 +144,29 @@ const CuponAdmin = () => {
                 Empresa: <span className="font-semibold text-emerald-700">{getEmpresaNombre(cupon.empresa)}</span>
               </div>
               <div className="w-full mb-2">
-                <div className="flex justify-between text-xs text-gray-500 mb-1">
+                <div className="flex justify-center text-xs text-gray-500 mb-1">
                   <span>
                     Cupos: {cupon.cantidad} / {cupon.cantidadInicial || cupon.cuposTotales || cupon.cantidad + (cupon.cuposOcupados || 0)}
                   </span>
-                  <span>{getProgress(cupon)}%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
-                  <div
-                    className="bg-emerald-500 h-3 rounded-full transition-all"
-                    style={{ width: `${getProgress(cupon)}%` }}
-                  ></div>
                 </div>
               </div>
               <div className="flex gap-2 mt-4">
                 <button
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg text-sm"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-lg text-sm cursor-pointer"
                   onClick={() => setDetailsModal({ show: true, cupon })}
                   title="Ver detalles"
                 >
                   <span className="material-symbols-outlined">Visibility</span>
                 </button>
                 <button
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm cursor-pointer"
                   onClick={() => handleEdit(cupon)}
                   title="Editar"
                 >
                   <span className="material-symbols-outlined">Edit</span>
                 </button>
                 <button
-                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg text-sm cursor-pointer"
                   onClick={() => handleDelete(cupon)}
                   title="Eliminar"
                 >
@@ -195,7 +182,7 @@ const CuponAdmin = () => {
       {totalPages > 1 && (
         <div className="flex items-center gap-2 mt-8 justify-center">
           <button
-            className="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+            className="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition cursor-pointer"
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
           >
@@ -208,14 +195,14 @@ const CuponAdmin = () => {
                 currentPage === idx + 1
                   ? "bg-green-700 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              } transition`}
+              } transition cursor-pointer`}
               onClick={() => setCurrentPage(idx + 1)}
             >
               {idx + 1}
             </button>
           ))}
           <button
-            className="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+            className="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition cursor-pointer"
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
           >
@@ -240,7 +227,7 @@ const CuponAdmin = () => {
           </div>
           <div className="mt-6 flex justify-end">
             <button
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer"
               onClick={() => fetchParticipantes(detailsModal.cupon.id)}
             >
               Ver participantes
@@ -283,7 +270,7 @@ const CuponAdmin = () => {
           )}
           <div className="flex justify-end">
             <button
-              className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium"
+              className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-pointer"
               onClick={() => setParticipantsModal({ show: false, cupon: null, participantes: [] })}
             >
               Cerrar
@@ -338,13 +325,13 @@ const CuponAdmin = () => {
             <div className="flex gap-4 mt-4">
               <button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer"
               >
                 Guardar
               </button>
               <button
                 type="button"
-                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium"
+                className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-pointer"
                 onClick={() => setEditModal(initialModalState)}
               >
                 Cancelar
@@ -361,13 +348,13 @@ const CuponAdmin = () => {
           <p className="mb-6 text-gray-900">¿Estás seguro de que deseas eliminar este cupón?</p>
           <div className="flex gap-4">
             <button
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium"
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer"
               onClick={confirmDelete}
             >
               Eliminar
             </button>
             <button
-              className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium"
+              className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium cursor-pointer"
               onClick={() => setDeleteModal(initialModalState)}
             >
               Cancelar
@@ -384,7 +371,7 @@ function Modal({ children, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
       <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-auto p-6 relative border-b-8 border-l-8 border-r-2 border-t-2 border-emerald-600 animate-fadeIn">
         <button
-          className="absolute top-3 right-3 text-gray-400 hover:text-emerald-600 text-2xl font-bold transition"
+          className="absolute top-3 right-3 text-gray-400 hover:text-emerald-600 text-2xl font-bold transition cursor-pointer"
           onClick={onClose}
           aria-label="Cerrar"
           type="button"
