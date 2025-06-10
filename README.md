@@ -66,18 +66,4 @@ RECICASH es una plataforma innovadora que transforma los hábitos de reciclaje e
 - **Empresa**: Gestiona cupones y promociones, y verifica transacciones de puntos
 - **Administrador**: Administra usuarios, empresas y supervisa toda la plataforma
 
-## 🤝 Contribución
-
-1. Haz un Fork del proyecto
-2. Crea una rama para tu función (`git checkout -b feature/nueva-funcion`)
-3. Haz commit de tus cambios (`git commit -m 'Añadir nueva función'`)
-4. Sube la rama (`git push origin feature/nueva-funcion`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
-
----
-
-💚 Construido con pasión por la sostenibilidad y el medio ambiente 🌎
+Construido con pasión por la sostenibilidad y el medio ambiente 🌎
