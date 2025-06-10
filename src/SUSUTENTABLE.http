@@ -9,7 +9,6 @@ GET https://proyectodesarrollo-94d5.onrender.com/api/cliente/14e34231-3c66-4507-
 # group: Cliente
 # @name Get Clientes
 GET https://proyectodesarrollo-94d5.onrender.com/api/cliente
-Authorization: Bearer {{vault:authorization-secret}}
 
 ###
 # group: Cliente
@@ -223,14 +222,13 @@ Content-Type: application/json
 # group: Auth
 # @name POST REGISTRO USUARIO
 POST https://proyectodesarrollo-94d5.onrender.com/api/auth/register
-Authorization: Bearer {{vault:authorization-secret}}
 Content-Type: application/json
 
 {
-  "email": "Joshuass@cliente.com",
-  "password": "Password1234+",
-  "nombre": "Joshua",
-  "telefono": "9514152727"
+  "email": "hector@outlook.com",
+  "password": "Abcd0123",
+  "nombre": "Hector Paulo",
+  "telefono": "0123456789"
 }
 
 ###

@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import GridDistortion from "/src/Backgrounds/GridDistortion/GridDistortion";
+import { useEffect } from 'react';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "/src/assets/Images/pexels-lizromo24-1999579.jpg";
@@ -15,7 +16,13 @@ const Signin = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, currentUser } = useAuth();
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/dashboard");
+    }
+  }, [currentUser, navigate]);
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -31,17 +38,17 @@ const Signin = () => {
       const { user, error } = await register(name, email, password, phone);
 
       if (error) {
-        Swal.fire("Error", error.message || "Error al crear la cuenta", "error");
+        console.log("Error al crear tu cuenta: ", error)
         return;
+      } else {
+        await Swal.fire("¡Registro exitoso!", "Tu cuenta ha sido creada.", "success");
       }
-
-      await Swal.fire("¡Registro exitoso!", "Tu cuenta ha sido creada.", "success");
-      navigate("/dashboard");
     } catch (err) {
       Swal.fire("Error", err.message || "Error inesperado al registrar usuario", "error");
       console.error(err);
     } finally {
       setIsLoading(false);
+      navigate("/dashboard");
     }
   };
 

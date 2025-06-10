@@ -11,10 +11,15 @@ export const registerWithEmailAndPassword = async (
 ) => {
   try {
     const credentials = { email, password, nombre, telefono };
+    console.log("Registrando usuario con datos: ", credentials);
     const response = await axios.post(`${API_URL}/auth/register`, credentials);
     return response.data;
   } catch (error) {
     console.error("Error al crear cuenta: ", error);
+    if (error.response) {
+      console.error("Error de backend: ", error.response.data);
+      throw error.response.data;
+    }
     throw error;
   }
 };

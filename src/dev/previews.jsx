@@ -43,6 +43,9 @@ const ComponentPreviews = () => {
             <ComponentPreview path="/Home">
                 <Home/>
             </ComponentPreview>
+            <ComponentPreview path="/AuthProvider">
+                <AuthProvider/>
+            </ComponentPreview>
         </Previews>
     )
 }

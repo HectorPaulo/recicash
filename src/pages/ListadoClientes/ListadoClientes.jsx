@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Search, Users, Filter, Eye, Edit3, Trash2, Plus, ChevronLeft, ChevronRight, X, Phone, Mail, User, UserCheck } from "lucide-react";
+import { Search, Users, Eye, Edit3, Trash2, ChevronLeft, ChevronRight, X, Phone, Mail, User } from "lucide-react";
 
 const PAGE_SIZE = 10;
 const API_URL = "https://proyectodesarrollo-94d5.onrender.com/api";
@@ -48,12 +48,12 @@ const ClientesList = () => {
 
   // Filtrar clientes por término de búsqueda
   const filteredClientes = clientes.filter(cliente =>
-    cliente.user_id?.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cliente.user_id?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (cliente.user_id?.nombre?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+    (cliente.user_id?.email?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
     (Array.isArray(cliente.user_id?.rol)
       ? cliente.user_id.rol.join(", ").toLowerCase()
-      : cliente.user_id?.rol?.toLowerCase()
-    )?.includes(searchTerm.toLowerCase())
+      : (cliente.user_id?.rol || "").toLowerCase()
+    ).includes(searchTerm.toLowerCase())
   );
 
   // Paginación
@@ -121,7 +121,7 @@ const ClientesList = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white  border-gray-200">
+      <div className="bg-white border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
@@ -131,15 +131,26 @@ const ClientesList = () => {
                 <p className="text-sm text-gray-500">Administra y supervisa tu cartera de clientes</p>
               </div>
             </div>
-            <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-700 hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-              <Plus className="h-4 w-4 mr-2" />
-              Nuevo Cliente
-            </button>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Barra de búsqueda */}
+        <div className="mb-6 flex items-center">
+          <div className="relative flex-grow">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Buscar clientes por nombre, email o rol..."
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
@@ -173,16 +184,16 @@ const ClientesList = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <User className="h-5 w-5 text-green-900 mr-2" />
-                          <span className="font-medium text-gray-900">{cliente.user_id?.nombre}</span>
+                          <span className="font-medium text-gray-900">{cliente.user_id?.nombre || "Sin nombre"}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex flex-col gap-1">
                           <span className="flex items-center text-gray-700 text-sm">
-                            <Mail className="h-4 w-4 mr-1" /> {cliente.user_id?.email}
+                            <Mail className="h-4 w-4 mr-1" /> {cliente.user_id?.email || "Sin email"}
                           </span>
                           <span className="flex items-center text-gray-700 text-sm">
-                            <Phone className="h-4 w-4 mr-1" /> {cliente.user_id?.telefono}
+                            <Phone className="h-4 w-4 mr-1" /> {cliente.user_id?.telefono || "Sin teléfono"}
                           </span>
                         </div>
                       </td>
@@ -190,27 +201,27 @@ const ClientesList = () => {
                         <span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${getRoleColor(cliente.user_id?.rol)}`}>
                           {Array.isArray(cliente.user_id?.rol)
                             ? cliente.user_id.rol.join(", ")
-                            : cliente.user_id?.rol}
+                            : cliente.user_id?.rol || "Sin rol"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         <div className="flex items-center justify-center gap-2">
                           <button
-                            className="p-2 rounded hover:bg-blue-50"
+                            className="p-2 rounded hover:bg-blue-50 cursor-pointer"
                             onClick={() => handleView(cliente)}
                             title="Ver"
                           >
                             <Eye className="h-4 w-4 text-blue-600" />
                           </button>
                           <button
-                            className="p-2 rounded hover:bg-amber-50"
+                            className="p-2 rounded hover:bg-amber-50 cursor-pointer"
                             onClick={() => handleEdit(cliente)}
                             title="Editar"
                           >
                             <Edit3 className="h-4 w-4 text-amber-600" />
                           </button>
                           <button
-                            className="p-2 rounded hover:bg-red-50"
+                            className="p-2 rounded hover:bg-red-50 cursor-pointer"
                             onClick={() => handleDelete(cliente)}
                             title="Eliminar"
                           >
@@ -313,22 +324,22 @@ const ClientesList = () => {
           <div className="grid grid-cols-1 gap-4">
             <div className="bg-gray-50 p-4 rounded-lg">
               <label className="text-sm font-medium text-gray-500">Nombre completo</label>
-              <p className="text-lg font-semibold text-gray-900">{detailModal.cliente.user_id?.nombre}</p>
+              <p className="text-lg font-semibold text-gray-900">{detailModal.cliente.user_id?.nombre || "Sin nombre"}</p>
             </div>
             <div className="bg-gray-50 p-4 rounded-lg">
               <label className="text-sm font-medium text-gray-500">Correo electrónico</label>
-              <p className="text-lg font-semibold text-gray-900">{detailModal.cliente.user_id?.email}</p>
+              <p className="text-lg font-semibold text-gray-900">{detailModal.cliente.user_id?.email || "Sin email"}</p>
             </div>
             <div className="bg-gray-50 p-4 rounded-lg">
               <label className="text-sm font-medium text-gray-500">Teléfono</label>
-              <p className="text-lg font-semibold text-gray-900">{detailModal.cliente.user_id?.telefono}</p>
+              <p className="text-lg font-semibold text-gray-900">{detailModal.cliente.user_id?.telefono || "Sin teléfono"}</p>
             </div>
             <div className="bg-gray-50 p-4 rounded-lg">
               <label className="text-sm font-medium text-gray-500">Rol</label>
               <p className="text-lg font-semibold text-gray-900">
                 {Array.isArray(detailModal.cliente.user_id?.rol)
                   ? detailModal.cliente.user_id.rol.join(", ")
-                  : detailModal.cliente.user_id?.rol}
+                  : detailModal.cliente.user_id?.rol || "Sin rol"}
               </p>
             </div>
           </div>
@@ -422,7 +433,7 @@ const ClientesList = () => {
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-red-800">
               ¿Estás seguro de que deseas eliminar permanentemente el cliente{" "}
-              <span className="font-semibold">{deleteModal.cliente.user_id?.nombre}</span>?
+              <span className="font-semibold">{deleteModal.cliente.user_id?.nombre || "Sin nombre"}</span>?
             </p>
           </div>
           <div className="flex gap-3">
