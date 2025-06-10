@@ -3,7 +3,6 @@ import { useAuth } from "../../contexts/AuthContext";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { Shield, User, Mail, Phone, AlertTriangle } from "lucide-react";
-import backgroundImage from "/src/assets/Images/oxc.jpg";
 
 const Settings = () => {
   const { currentUser, setCurrentUser, logout } = useAuth();
