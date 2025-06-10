@@ -59,8 +59,12 @@ const Settings = () => {
         const clienteId = currentUser?.id || currentUser?.user_id?.id;
         await axios.delete(`https://proyectodesarrollo-94d5.onrender.com/api/cliente/${clienteId}`);
         await Swal.fire("Cuenta eliminada", "Tu cuenta ha sido eliminada.", "success");
-        await logout();
-        window.location.href = "/login";
+        // Cerrar sesión primero
+        localStorage.removeItem("recicash_user");
+        // Asegurar que la redirección ocurra después del logout
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 100);
       } catch (error) {
         await Swal.fire("Error", "No se pudo eliminar la cuenta.", "error");
       } finally {

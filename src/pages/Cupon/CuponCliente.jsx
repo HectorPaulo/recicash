@@ -231,7 +231,7 @@ const handleDesuscribir = async (cuponId) => {
                                                       {cupon.cantidad <= 0
                                                         ? "Sin cupos"
                                                         : yaParticipa(cupon.id)
-                                                        ? "Ya participas"
+                                                        ? "Pujado"
                                                         : participando === cupon.id
                                                         ? "Solicitando..."
                                                         : "Pujar"}
