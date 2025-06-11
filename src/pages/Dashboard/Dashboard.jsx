@@ -454,7 +454,7 @@ const Dashboard = () => {
                   <KpiCard
                     title={
                       isCliente
-                        ? "Puntos Acumulados"
+                        ? "Dinero ganado"
                         : "Valor total de cupones activos"
                     }
                     value={
